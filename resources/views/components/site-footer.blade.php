@@ -1,8 +1,8 @@
-<footer class="mt-20 border-t border-stone-200 bg-white">
-    <x-site-container class="max-w-6xl py-12 sm:py-16">
-        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="sm:col-span-2 lg:col-span-1">
-                <p class="font-display text-xl text-stone-900">{{ $siteName ?? config('site.name') }}</p>
+<footer class="mt-16 border-t border-stone-200 bg-white sm:mt-20">
+    <x-site-container class="max-w-6xl py-10 sm:py-16">
+        <div class="grid gap-6 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
+            <div class="md:col-span-2 lg:col-span-1">
+                <p class="font-display text-lg text-stone-900 sm:text-xl">{{ $siteName ?? config('site.name') }}</p>
                 <p class="mt-3 max-w-sm text-base leading-relaxed text-stone-600">
                     {{ $footerDescription ?: ($siteShortDescription ?: ($siteTagline ?? config('site.tagline'))) }}
                 </p>
@@ -26,9 +26,8 @@
             </div>
 
             @if ($footerCategories->isNotEmpty())
-                <div>
-                    <h2 class="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Kategoriler</h2>
-                    <ul class="mt-4 space-y-2">
+                <x-footer-nav-section title="Kategoriler" section-id="categories">
+                    <ul class="mt-0 space-y-2 pb-4 md:mt-4 md:pb-0">
                         @foreach ($footerCategories as $category)
                             <li>
                                 <a href="{{ route('categories.show', $category->slug) }}" class="text-base text-stone-700 hover:text-accent-700">
@@ -37,12 +36,11 @@
                             </li>
                         @endforeach
                     </ul>
-                </div>
+                </x-footer-nav-section>
             @endif
 
-            <div>
-                <h2 class="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Sayfalar</h2>
-                <ul class="mt-4 space-y-2">
+            <x-footer-nav-section title="Sayfalar" section-id="pages">
+                <ul class="mt-0 space-y-2 pb-4 md:mt-4 md:pb-0">
                     @foreach ($staticPages as $page)
                         @php $pageRoute = \App\Support\PublicContent::staticPageRouteName($page->slug); @endphp
                         @if ($pageRoute)
@@ -54,18 +52,17 @@
                         @endif
                     @endforeach
                 </ul>
-            </div>
+            </x-footer-nav-section>
 
-            <div>
-                <h2 class="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Keşfet</h2>
-                <ul class="mt-4 space-y-2">
+            <x-footer-nav-section title="Keşfet" section-id="explore">
+                <ul class="mt-0 space-y-2 pb-4 md:mt-4 md:pb-0">
                     <li><a href="{{ route('posts.index') }}" class="text-base text-stone-700 hover:text-accent-700">Tüm Yazılar</a></li>
                     <li><a href="{{ route('search') }}" class="text-base text-stone-700 hover:text-accent-700">Arama</a></li>
                 </ul>
-            </div>
+            </x-footer-nav-section>
         </div>
 
-        <p class="mt-12 border-t border-stone-100 pt-8 text-sm text-stone-500">
+        <p class="mt-8 border-t border-stone-100 pt-6 text-sm text-stone-500 sm:mt-12 sm:pt-8">
             &copy; {{ now()->year }} {{ $siteName ?? config('site.name') }}. Tüm hakları saklıdır.
         </p>
     </x-site-container>
