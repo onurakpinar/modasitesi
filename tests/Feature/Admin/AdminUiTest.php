@@ -37,7 +37,7 @@ class AdminUiTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin');
 
         $response->assertOk();
-        $response->assertSee('adminShell()', false);
+        $response->assertSee('x-data="adminShell"', false);
         $response->assertSee('sidebarOpen', false);
         $response->assertSee('Menüyü aç', false);
         $response->assertSee('-translate-x-full', false);

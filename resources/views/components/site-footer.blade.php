@@ -1,4 +1,4 @@
-<footer class="mt-16 border-t border-stone-200 bg-white sm:mt-20" x-data="footerAccordion()">
+<footer class="mt-16 border-t border-stone-200 bg-white sm:mt-20">
     <x-site-container class="max-w-6xl py-10 sm:py-16">
         <div class="grid gap-6 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div class="md:col-span-2 lg:col-span-1">

@@ -5,8 +5,11 @@ const isDesktopViewport = () => window.matchMedia(DESKTOP_MEDIA).matches;
 export function registerNavigationComponents(Alpine) {
     Alpine.data('siteHeader', () => ({
         mobileMenuOpen: false,
+        menuButtonShowsOpen: true,
         categoriesOpen: false,
+        categoriesChevronClass: '',
         mobileCategoriesOpen: false,
+        mobileCategoriesChevronClass: '',
         _resizeHandler: null,
 
         init() {
@@ -50,15 +53,21 @@ export function registerNavigationComponents(Alpine) {
             }
 
             this.mobileMenuOpen = true;
+            this.menuButtonShowsOpen = false;
             this.categoriesOpen = false;
             this.mobileCategoriesOpen = false;
+            this.mobileCategoriesChevronClass = '';
             document.body.classList.add('overflow-hidden');
             this.$nextTick(() => this.$refs.mobileNav?.querySelector('a, button')?.focus());
         },
 
         closeMobileMenu(focusButton = true) {
             this.mobileMenuOpen = false;
+            this.menuButtonShowsOpen = true;
             this.mobileCategoriesOpen = false;
+            this.mobileCategoriesChevronClass = '';
+            this.categoriesOpen = false;
+            this.categoriesChevronClass = '';
             document.body.classList.remove('overflow-hidden');
 
             if (focusButton) {
@@ -68,45 +77,55 @@ export function registerNavigationComponents(Alpine) {
 
         toggleCategories() {
             this.categoriesOpen = !this.categoriesOpen;
+            this.categoriesChevronClass = this.categoriesOpen ? 'rotate-180' : '';
         },
 
         closeCategories() {
             this.categoriesOpen = false;
+            this.categoriesChevronClass = '';
         },
 
         toggleMobileCategories() {
             this.mobileCategoriesOpen = !this.mobileCategoriesOpen;
+            this.mobileCategoriesChevronClass = this.mobileCategoriesOpen ? 'rotate-180' : '';
         },
     }));
 
-    Alpine.data('footerAccordion', () => ({
-        openSection: null,
+    Alpine.data('footerSection', () => ({
+        open: false,
+        chevronClass: '',
+        panelClass: 'hidden md:block',
 
-        toggleSection(id) {
-            this.openSection = this.openSection === id ? null : id;
-        },
-
-        isSectionOpen(id) {
-            return this.openSection === id;
-        },
-
-        sectionPanelClass(id) {
-            return this.isSectionOpen(id) ? 'block' : 'hidden md:block';
+        toggle() {
+            this.open = !this.open;
+            this.chevronClass = this.open ? 'rotate-180' : '';
+            this.panelClass = this.open ? 'block' : 'hidden md:block';
         },
     }));
 
     Alpine.data('adminShell', () => ({
         sidebarOpen: false,
+        menuButtonShowsOpen: true,
+        sidebarTranslateClass: '',
+        sidebarAriaHidden: true,
         _resizeHandler: null,
 
         init() {
+            this.syncSidebarState();
             this._resizeHandler = () => {
                 if (isDesktopViewport()) {
                     this.closeSidebar(false);
                 }
+
+                this.syncSidebarState();
             };
 
             window.addEventListener('resize', this._resizeHandler);
+        },
+
+        syncSidebarState() {
+            this.sidebarTranslateClass = this.sidebarOpen ? 'translate-x-0' : '';
+            this.sidebarAriaHidden = !isDesktopViewport() && !this.sidebarOpen;
         },
 
         destroy() {
@@ -129,6 +148,8 @@ export function registerNavigationComponents(Alpine) {
             }
 
             this.sidebarOpen = true;
+            this.menuButtonShowsOpen = false;
+            this.syncSidebarState();
             document.body.classList.add('overflow-hidden');
             this.$nextTick(() => this.$refs.adminSidebar?.querySelector('a')?.focus());
         },
@@ -139,6 +160,8 @@ export function registerNavigationComponents(Alpine) {
             }
 
             this.sidebarOpen = false;
+            this.menuButtonShowsOpen = true;
+            this.syncSidebarState();
             document.body.classList.remove('overflow-hidden');
 
             if (focusMenu) {

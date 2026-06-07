@@ -17,7 +17,7 @@ class AdminResponsiveTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.dashboard'))
             ->assertOk()
-            ->assertSee('x-data="adminShell()"', false)
+            ->assertSee('x-data="adminShell"', false)
             ->assertSee('toggleSidebar()', false)
             ->assertSee('closeSidebarOnNavigate()', false)
             ->assertSee('max-w-[85vw]', false);

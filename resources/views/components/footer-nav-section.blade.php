@@ -3,18 +3,18 @@
     'sectionId',
 ])
 
-<div class="border-b border-stone-100 pb-1 md:border-0 md:pb-0">
+<div class="border-b border-stone-100 pb-1 md:border-0 md:pb-0" x-data="footerSection">
     <button
         type="button"
         class="flex min-h-11 w-full items-center justify-between py-4 text-left md:hidden"
-        @click="toggleSection('{{ $sectionId }}')"
-        :aria-expanded="isSectionOpen('{{ $sectionId }}')"
+        @click="toggle"
+        :aria-expanded="open"
         aria-controls="footer-section-{{ $sectionId }}"
     >
         <span class="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">{{ $title }}</span>
         <svg
             class="size-5 shrink-0 text-stone-400 transition-transform duration-200"
-            :class="{ 'rotate-180': isSectionOpen('{{ $sectionId }}') }"
+            :class="chevronClass"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -28,7 +28,7 @@
 
     <div
         id="footer-section-{{ $sectionId }}"
-        :class="sectionPanelClass('{{ $sectionId }}')"
+        :class="panelClass"
     >
         {{ $slot }}
     </div>

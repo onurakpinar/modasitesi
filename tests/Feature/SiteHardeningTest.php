@@ -44,7 +44,9 @@ class SiteHardeningTest extends TestCase
             $response->assertHeader('X-Content-Type-Options', 'nosniff');
             $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
             $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
-            $this->assertStringContainsString('default-src', (string) $response->headers->get('Content-Security-Policy'), "CSP eksik: {$url}");
+            $csp = (string) $response->headers->get('Content-Security-Policy');
+            $this->assertStringContainsString('default-src', $csp, "CSP eksik: {$url}");
+            $this->assertStringNotContainsString('unsafe-eval', $csp, "CSP unsafe-eval içermemeli: {$url}");
         }
     }
 

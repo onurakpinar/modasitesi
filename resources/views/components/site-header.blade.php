@@ -4,8 +4,8 @@
 
 <header
     class="relative z-40 border-b border-stone-200 bg-white"
-    x-data="siteHeader()"
-    @keydown.escape.window="closeMobileMenu(); closeCategories()"
+    x-data="siteHeader"
+    @keydown.escape.window="closeMobileMenu"
 >
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <div
@@ -53,14 +53,14 @@
                             type="button"
                             class="inline-flex min-h-11 items-center gap-1.5 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 {{ request()->routeIs('categories.show') ? 'text-accent-700' : '' }}"
                             @click="toggleCategories()"
-                            :aria-expanded="categoriesOpen.toString()"
+                            :aria-expanded="categoriesOpen"
                             aria-controls="site-navigation-categories"
                             aria-haspopup="true"
                         >
                             Kategoriler
                             <svg
                                 class="size-4 shrink-0 transition-transform duration-200"
-                                :class="{ 'rotate-180': categoriesOpen }"
+                                :class="categoriesChevronClass"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -119,12 +119,12 @@
                     x-ref="menuButton"
                     class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
                     @click="toggleMobileMenu()"
-                    :aria-expanded="mobileMenuOpen.toString()"
+                    :aria-expanded="mobileMenuOpen"
                     aria-controls="site-navigation-mobile"
                     aria-label="Menüyü aç veya kapat"
                 >
                     <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="menuButtonShowsOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
                         <path x-show="mobileMenuOpen" x-cloak style="display: none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -171,13 +171,13 @@
                         type="button"
                         class="flex min-h-11 w-full items-center justify-between px-1 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2"
                         @click="toggleMobileCategories()"
-                        :aria-expanded="mobileCategoriesOpen.toString()"
+                        :aria-expanded="mobileCategoriesOpen"
                         aria-controls="site-navigation-mobile-categories"
                     >
                         Kategoriler
                         <svg
                             class="size-4 shrink-0 transition-transform duration-200"
-                            :class="{ 'rotate-180': mobileCategoriesOpen }"
+                            :class="mobileCategoriesChevronClass"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"

@@ -10,7 +10,7 @@
     <x-site-head :with-fonts="false" />
     @stack('head')
 </head>
-<body class="min-h-screen bg-stone-100 text-stone-900 antialiased" x-data="adminShell()" @keydown.escape.window="closeSidebar()">
+<body class="min-h-screen bg-stone-100 text-stone-900 antialiased" x-data="adminShell" @keydown.escape.window="closeSidebar">
     <div class="flex min-h-screen">
         <div
             x-show="sidebarOpen"
@@ -40,7 +40,7 @@
                     aria-label="Menüyü aç veya kapat"
                 >
                     <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="menuButtonShowsOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
                         <path x-show="sidebarOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>

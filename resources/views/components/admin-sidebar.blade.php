@@ -2,8 +2,8 @@
     id="admin-sidebar"
     x-ref="adminSidebar"
     class="fixed inset-y-0 left-0 z-50 w-64 max-w-[85vw] -translate-x-full border-r border-stone-200 bg-white transition-transform lg:translate-x-0"
-    :class="{ 'translate-x-0': sidebarOpen }"
-    :aria-hidden="!isDesktop() && !sidebarOpen"
+    :class="sidebarTranslateClass"
+    :aria-hidden="sidebarAriaHidden"
 >
     <div class="flex h-full flex-col">
         <div class="flex items-start justify-between gap-3 border-b border-stone-200 px-5 py-5">
