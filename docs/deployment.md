@@ -34,7 +34,7 @@ Yerel geliştirmede `.env` içinde `APP_ENV=local` ve `APP_DEBUG=true` kullanın
 
 1. Coolify panelinde **New Resource → Application** seçin.
 2. Git deposunu bağlayın (GitHub/GitLab).
-3. **Build Pack**: Dockerfile
+3. **Build Pack**: **Dockerfile** (Nixpacks değil — aşağıdaki sorun giderme bölümüne bakın)
 4. Dockerfile yolu: `Dockerfile` (kök dizin)
 5. Port: **8080** (container içi dinleme portu)
 6. **Liveness** health check path: `/up` (DB gerekmez; container ayağa kalkma kontrolü)
@@ -288,8 +288,23 @@ Coolify kullanımı önerilir; container izolasyonu ve HTTPS yönetimi daha az h
 
 ## Sorun giderme
 
+### `Request.php` syntax error (Nixpacks build)
+
+Coolify logunda `Found application type: php` ve `composer install` sırasında `syntax error, unexpected token "{"` görüyorsanız **Nixpacks** kullanılıyordur; Laravel 13 için **PHP 8.3** gerekir.
+
+**Çözüm (önerilen):**
+
+1. Coolify → Application → **Configuration** → **Build**
+2. **Build Pack** → `Dockerfile`
+3. **Dockerfile Location** → `Dockerfile`
+4. **Port** → `8080`
+5. Yeniden deploy
+
+**Alternatif:** Build Pack Nixpacks kalacaksa repodaki `nixpacks.toml` dosyası PHP 8.3 ve `--no-scripts` ile composer kurulumunu zorlar; yine de Dockerfile tercih edin (nginx + php-fpm + `start.sh`).
+
 | Belirti | Olası çözüm |
 |---------|-------------|
+| Nixpacks + composer syntax error | Build Pack → Dockerfile, Port 8080 |
 | 502/503 | `php artisan site:readiness`, DB bağlantısı, container logları |
 | Görseller görünmüyor | `storage:link`, `storage/app/public` izinleri |
 | CSS yok | `npm run build`, `public/build` dizini |
