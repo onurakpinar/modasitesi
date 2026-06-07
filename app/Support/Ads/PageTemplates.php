@@ -2,11 +2,13 @@
 
 namespace App\Support\Ads;
 
+use App\Support\Legal\LegalPlaceholders;
+
 class PageTemplates
 {
     public static function hasUnresolvedPlaceholders(string $body): bool
     {
-        return (bool) preg_match('/\[[A-ZÇĞİÖŞÜ0-9_\s]+\]/u', $body);
+        return LegalPlaceholders::hasBlockingPlaceholders($body);
     }
 
     public static function containsLoremIpsum(string $body): bool
@@ -33,78 +35,79 @@ class PageTemplates
         return true;
     }
 
+    public static function renderBody(string $body): string
+    {
+        return LegalPlaceholders::render($body);
+    }
+
     public static function privacyPolicy(): string
     {
         return <<<'HTML'
-<h2>Veri Sorumlusu</h2>
-<p>[ISLETME_UNVANI] (“biz”, “site”), [SITE_URL] adresindeki [SITE_ADI] yayınını işletir. Bu gizlilik politikası, kişisel verilerinizin nasıl toplandığını, kullanıldığını ve korunduğunu açıklar.</p>
-<p>İletişim: [ILETISIM_EPOSTA]</p>
+<p class="text-stone-600">Son güncelleme: [GUNCELLEME_TARIHI]</p>
+
+<p>ModaPusula (&ldquo;biz&rdquo;, &ldquo;site&rdquo;) olarak gizliliğinize önem veriyoruz. Bu politika, hangi verileri topladığımızı, nasıl kullandığımızı ve haklarınızı açıklar.</p>
 
 <h2>Topladığımız Veriler</h2>
-<p>İletişim formu aracılığıyla gönderdiğiniz ad, e-posta adresi ve mesaj içeriği; teknik loglar (IP adresi, tarayıcı bilgisi, erişim zamanı) ve çerez verileri işlenebilir.</p>
+<ul>
+<li>İletişim formu aracılığıyla gönüllü olarak ilettiğiniz ad, e-posta ve mesaj içeriği.</li>
+<li>Sitenin teknik olarak çalışması için işlenen log kayıtları (IP adresi, tarayıcı türü, ziyaret zamanı).</li>
+<li>Çerezler aracılığıyla toplanan kullanım verileri (bkz. Çerez Politikası).</li>
+</ul>
 
-<h2>Çerezler</h2>
-<p>Site işlevselliği ve tercihlerinizin hatırlanması için zorunlu çerezler kullanılabilir. Reklam ve analitik çerezleri yalnızca açık rızanız ve geçerli yasal gereklilikler çerçevesinde devreye alınır.</p>
+<h2>Verilerin Kullanımı</h2>
+<p>Topladığımız verileri yalnızca size geri dönüş yapmak, siteyi geliştirmek ve yasal yükümlülüklerimizi yerine getirmek için kullanırız. Verilerinizi izniniz olmadan üçüncü taraflarla pazarlama amacıyla paylaşmayız.</p>
 
-<h2>Reklam ve Üçüncü Taraf Sağlayıcılar</h2>
-<p>Google dahil üçüncü taraf sağlayıcılar, reklam sunumu sırasında çerez kullanabilir. Google’ın reklam çerezleri, kullanıcıların bu siteye ve diğer sitelere yaptığı ziyaretlere dayanarak kişiselleştirilmiş reklamlar sunmak için kullanılabilir.</p>
-<p>Kullanıcılar, <a href="https://www.google.com/settings/ads" rel="noopener noreferrer">Google Reklam Ayarları</a> üzerinden kişiselleştirilmiş reklamları devre dışı bırakabilir. Ayrıca <a href="https://optout.aboutads.info/" rel="noopener noreferrer">aboutads.info</a> üzerinden üçüncü taraf sağlayıcıların çerez kullanımını yönetebilirsiniz.</p>
-<p>Reklam teknolojisi ortakları ve üçüncü taraf sağlayıcılar hakkında ayrıntılı bilgi için Google’ın reklam politikalarını ve ilgili sağlayıcıların gizlilik bildirimlerini inceleyebilirsiniz.</p>
+<h2>Çerezler ve Üçüncü Taraf Reklamcılık</h2>
+<p>Sitemizde, Google dahil üçüncü taraf sağlayıcılar reklam yayınlamak için çerez kullanabilir. Google, DART çerezi gibi çerezleri kullanarak kullanıcılarımıza sitemize ve internetteki diğer sitelere yaptıkları ziyaretlere dayalı reklamlar sunabilir.</p>
+<p>Kullanıcılar, kişiselleştirilmiş reklamları <a href="https://adssettings.google.com" rel="noopener noreferrer">Google Reklam Ayarları</a> sayfasından devre dışı bırakabilir. Ayrıca <a href="https://www.aboutads.info" rel="noopener noreferrer">aboutads.info</a> adresinden üçüncü taraf satıcıların çerez kullanımını yönetebilirsiniz.</p>
 
-<h2>İletişim Formu Verileri</h2>
-<p>İletişim formu ile gönderilen bilgiler yalnızca talebinize yanıt vermek amacıyla işlenir. Mesajlar yetkisiz erişime karşı korunur ve yalnızca yetkili ekip tarafından görüntülenir.</p>
+<h2>KVKK Kapsamındaki Haklarınız</h2>
+<p>6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca; verilerinize erişme, düzeltme, silinmesini talep etme ve işlenmesine itiraz etme haklarına sahipsiniz. Bu haklarınızı kullanmak için [E-POSTA_ADRESİ] adresinden bize ulaşabilirsiniz.</p>
 
-<h2>Saklama ve Silme</h2>
-<p>Veriler, işleme amacının gerektirdiği süre boyunca saklanır. Saklama süresi dolduğunda veya silme talebiniz üzerine veriler makul sürede silinir veya anonimleştirilir.</p>
-
-<h2>Haklarınız</h2>
-<p>KVKK ve ilgili mevzuat kapsamında erişim, düzeltme, silme ve itiraz haklarınızı [ILETISIM_EPOSTA] adresine yazarak kullanabilirsiniz.</p>
-
-<h2>Güncellemeler</h2>
-<p>Bu politika gerektiğinde güncellenebilir. Son güncelleme: [GUNCELLEME_TARIHI]</p>
+<h2>İletişim</h2>
+<p>Bu politikayla ilgili sorularınız için: [E-POSTA_ADRESİ] — [ŞİRKET_ADI], [ŞİRKET_ADRESİ].</p>
 HTML;
     }
 
     public static function cookiePolicy(): string
     {
         return <<<'HTML'
-<h2>Çerez Nedir?</h2>
-<p>Çerezler, tarayıcınıza kaydedilen küçük metin dosyalarıdır. Site deneyimini iyileştirmek ve yasal gerekliliklere uymak için kullanılabilir.</p>
+<p class="text-stone-600">Son güncelleme: [GUNCELLEME_TARIHI]</p>
 
-<h2>Kullandığımız Çerez Türleri</h2>
+<p>Bu sitede deneyiminizi iyileştirmek ve reklam sunmak için çerezler kullanılır.</p>
+
+<h2>Çerez Türleri</h2>
 <ul>
-<li><strong>Zorunlu çerezler:</strong> Oturum ve güvenlik için gereklidir.</li>
-<li><strong>Tercih çerezleri:</strong> Dil veya görünüm tercihlerinizi hatırlar.</li>
-<li><strong>Reklam çerezleri:</strong> Yalnızca onayınız ve sertifikalı bir CMP yapılandırması sonrasında devreye alınır.</li>
+<li><strong>Zorunlu çerezler:</strong> Sitenin temel işlevleri için gereklidir.</li>
+<li><strong>Analitik çerezler:</strong> Ziyaretçi davranışını anonim olarak ölçmek için kullanılır.</li>
+<li><strong>Reklam çerezleri:</strong> Google ve diğer üçüncü taraf reklam ağları, ilgi alanlarınıza uygun reklam göstermek için çerez kullanabilir.</li>
 </ul>
 
-<h2>Üçüncü Taraf Çerezleri</h2>
-<p>Google AdSense gibi üçüncü taraf sağlayıcılar, reklam sunumu sırasında çerez kullanabilir. Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre ziyaretçileri için Google sertifikalı bir CMP kullanılmalıdır.</p>
+<h2>Çerezleri Yönetme</h2>
+<p>Tarayıcı ayarlarınızdan çerezleri silebilir veya engelleyebilirsiniz. Ancak bazı çerezleri devre dışı bırakmak sitenin bazı bölümlerinin düzgün çalışmamasına neden olabilir.</p>
+<p>Kişiselleştirilmiş Google reklamlarını <a href="https://adssettings.google.com" rel="noopener noreferrer">adssettings.google.com</a> adresinden kapatabilirsiniz.</p>
 
-<h2>Çerez Tercihlerinizi Yönetme</h2>
-<p>Çerez tercihlerinizi tarayıcı ayarlarınızdan veya sitede sunulan onay aracından yönetebilirsiniz.</p>
-
-<h2>İletişim</h2>
-<p>Sorularınız için: [ILETISIM_EPOSTA]</p>
+<p>Daha fazla bilgi için <a href="/gizlilik-politikasi">Gizlilik Politikamızı</a> inceleyebilirsiniz.</p>
 HTML;
     }
 
     public static function about(): string
     {
         return <<<'HTML'
-<h2>Hakkımızda</h2>
-<p>[SITE_ADI], moda ve stil üzerine özgün içerikler sunan bağımsız bir yayın platformudur.</p>
-<p>İşletmeci: [ISLETME_UNVANI]</p>
-<p>İletişim: [ILETISIM_EPOSTA]</p>
+<p>ModaPusula, moda ve stil üzerine özgün, uygulanabilir içerikler yayınlayan bağımsız bir editoryal yayındır. Amacımız hızlı tüketim baskısı yaratmadan, okuyucularımızın mevcut gardıroplarını daha bilinçli yönetmelerine yardımcı olmaktır.</p>
+
+<p>İçeriklerimiz, moda ve stil alanında deneyimli editörlerimiz tarafından hazırlanır ve yayınlanmadan önce gözden geçirilir. Marka önerisi, affiliate bağlantısı veya ücretli yerleştirme içermez; tüm yazılar editoryal bağımsızlık ilkesiyle üretilir.</p>
+
+<p>Geri bildirim, düzeltme talebi veya iş birliği için <a href="/iletisim">İletişim</a> sayfamızdan bize ulaşabilirsiniz.</p>
+
+<p>ModaPusula [ŞİRKET_ADI] tarafından yayınlanmaktadır.</p>
 HTML;
     }
 
     public static function contact(): string
     {
         return <<<'HTML'
-<h2>İletişim</h2>
-<p>Genel sorularınız, iş birliği teklifleri ve düzeltme talepleri için bizimle iletişime geçebilirsiniz.</p>
-<p>E-posta: [ILETISIM_EPOSTA]</p>
+<p>Sorularınız, düzeltme talepleriniz veya iş birliği önerileriniz için bize aşağıdaki form üzerinden veya e-posta ile ulaşabilirsiniz. Editoryal ekibimiz tüm geri bildirimleri değerlendirir.</p>
 HTML;
     }
 
@@ -151,6 +154,19 @@ HTML;
             'kullanim-kosullari' => self::terms(),
             'yayin-ilkeleri' => self::editorial(),
             'duzeltme-politikasi' => self::corrections(),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function defaultMetaDescriptions(): array
+    {
+        return [
+            'hakkimizda' => 'ModaPusula hakkında: bağımsız moda editoryal yayınımızın misyonu ve yayın ilkeleri.',
+            'iletisim' => 'ModaPusula iletişim: sorularınız, düzeltme talepleri ve iş birliği önerileri için bize ulaşın.',
+            'gizlilik-politikasi' => 'ModaPusula gizlilik politikası: kişisel verilerin toplanması, kullanımı ve KVKK haklarınız.',
+            'cerez-politikasi' => 'ModaPusula çerez politikası: kullanılan çerez türleri ve tercihlerinizi nasıl yönetebileceğiniz.',
         ];
     }
 }

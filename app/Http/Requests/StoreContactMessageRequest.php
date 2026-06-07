@@ -36,7 +36,7 @@ class StoreContactMessageRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:255'],
-            'subject' => ['required', 'string', 'max:200'],
+            'subject' => ['nullable', 'string', 'max:200'],
             'message' => ['required', 'string', 'max:5000'],
             'privacy_acknowledged' => ['accepted'],
         ];

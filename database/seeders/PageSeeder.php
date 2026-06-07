@@ -14,14 +14,20 @@ class PageSeeder extends Seeder
     {
         $labels = PublicContent::staticPageLabels();
         $templates = PageTemplates::defaultBodies();
+        $metaDescriptions = PageTemplates::defaultMetaDescriptions();
+        $publishedSlugs = PublicContent::footerStaticPageSlugs();
 
         foreach (PublicContent::staticPageRoutes() as $slug) {
+            $isPublished = in_array($slug, $publishedSlugs, true)
+                && PageTemplates::isPublicReady($templates[$slug] ?? '');
+
             Page::query()->updateOrCreate(
                 ['slug' => $slug],
                 [
                     'title' => $labels[$slug] ?? $slug,
                     'body' => $templates[$slug] ?? '',
-                    'status' => PageStatus::Draft,
+                    'meta_description' => $metaDescriptions[$slug] ?? null,
+                    'status' => $isPublished ? PageStatus::Published : PageStatus::Draft,
                 ]
             );
         }

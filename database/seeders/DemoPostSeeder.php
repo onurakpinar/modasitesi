@@ -135,7 +135,7 @@ class DemoPostSeeder extends Seeder
         }
 
         if (! filled(SiteSetting::get('contact_email'))) {
-            SiteSetting::set('contact_email', 'iletisim@modapusula.test', 'contact');
+            SiteSetting::set('contact_email', config('legal.contact_email'), 'contact');
         }
     }
 

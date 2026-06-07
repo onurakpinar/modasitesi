@@ -11,6 +11,9 @@ trait PublishesStaticPages
     protected function publishStaticPagesForTests(): void
     {
         $replacements = [
+            '[ŞİRKET_ADI]' => 'Test Yayın Ltd.',
+            '[E-POSTA_ADRESİ]' => 'iletisim@moda.test',
+            '[ŞİRKET_ADRESİ]' => 'İstanbul, Türkiye',
             '[ISLETME_UNVANI]' => 'Test Yayın Ltd.',
             '[SITE_ADI]' => 'Test Moda Sitesi',
             '[SITE_URL]' => 'https://moda.test',

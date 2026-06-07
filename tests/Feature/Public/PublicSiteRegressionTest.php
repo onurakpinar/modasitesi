@@ -272,7 +272,8 @@ class PublicSiteRegressionTest extends TestCase
         $response->assertSee(route('posts.index'), false);
         $response->assertSee(route('search'), false);
 
-        foreach (PublicContent::staticPageRoutes() as $routeName => $slug) {
+        foreach (PublicContent::footerStaticPageSlugs() as $slug) {
+            $routeName = PublicContent::staticPageRouteName($slug);
             $response->assertSee(route($routeName), false);
         }
     }

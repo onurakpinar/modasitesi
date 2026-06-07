@@ -174,6 +174,26 @@ class PublicSiteTest extends TestCase
             ->assertSee('sonuç bulunamadı', false);
     }
 
+    public function test_yasal_sayfalar_seed_sonrasi_yuklenir(): void
+    {
+        foreach (PublicContent::footerStaticPageSlugs() as $slug) {
+            $routeName = PublicContent::staticPageRouteName($slug);
+
+            $this->get(route($routeName))
+                ->assertOk()
+                ->assertSee(PublicContent::staticPageLabels()[$slug], false);
+        }
+    }
+
+    public function test_footer_sayfalar_bolumu_yasal_linkleri_gosterir(): void
+    {
+        $response = $this->get(route('home'))->assertOk();
+
+        foreach (PublicContent::footerStaticPageSlugs() as $slug) {
+            $response->assertSee(PublicContent::staticPageLabels()[$slug], false);
+        }
+    }
+
     public function test_sabit_sayfalar_yuklenir(): void
     {
         $this->publishStaticPagesForTests();

@@ -13,7 +13,7 @@
         </div>
 
         <div>
-            <label for="contact_name" class="block text-sm font-medium text-stone-900">Ad</label>
+            <label for="contact_name" class="block text-sm font-medium text-stone-900">Adınız</label>
             <input
                 type="text"
                 name="name"
@@ -40,21 +40,6 @@
                 class="mt-1 block w-full rounded-md border border-stone-300 px-3 py-2 text-base text-stone-900 shadow-sm focus:border-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-600/30"
             >
             @error('email')
-                <p class="mt-1 text-sm text-red-700">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="contact_subject" class="block text-sm font-medium text-stone-900">Konu</label>
-            <input
-                type="text"
-                name="subject"
-                id="contact_subject"
-                value="{{ old('subject') }}"
-                required
-                class="mt-1 block w-full rounded-md border border-stone-300 px-3 py-2 text-base text-stone-900 shadow-sm focus:border-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-600/30"
-            >
-            @error('subject')
                 <p class="mt-1 text-sm text-red-700">{{ $message }}</p>
             @enderror
         </div>

@@ -3,6 +3,7 @@
 namespace App\View\Composers;
 
 use App\Models\SiteSetting;
+use App\Support\Legal\LegalPlaceholders;
 use App\Support\PublicContent;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -27,7 +28,7 @@ class SiteComposer
                 'siteTagline' => $settings['site_tagline'] ?? config('site.tagline'),
                 'siteShortDescription' => $settings['site_short_description'] ?? '',
                 'footerDescription' => $settings['footer_description'] ?? '',
-                'contactEmail' => filled($settings['contact_email'] ?? null) ? $settings['contact_email'] : null,
+                'contactEmail' => LegalPlaceholders::effectiveContactEmail($settings['contact_email'] ?? null),
                 'siteLogo' => $settings['site_logo'] ?? null,
                 'siteFavicon' => $settings['site_favicon'] ?? null,
                 'socialLinks' => [
@@ -38,7 +39,7 @@ class SiteComposer
                 ],
                 'navCategories' => $this->navCategories(),
                 'footerCategories' => $this->navCategories(),
-                'staticPages' => $this->staticPages(),
+                'staticPages' => $this->footerPages(),
             ];
         });
     }
@@ -68,14 +69,14 @@ class SiteComposer
         });
     }
 
-    private function staticPages()
+    private function footerPages()
     {
         return once(function () {
             if (! Schema::hasTable('pages')) {
                 return collect();
             }
 
-            return PublicContent::publishedStaticPages();
+            return PublicContent::publishedFooterPages();
         });
     }
 }

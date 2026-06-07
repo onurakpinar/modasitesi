@@ -145,11 +145,12 @@ class AdSenseModuleTest extends TestCase
 
     public function test_placeholder_iceren_sabit_sayfa_publicte_404_doner(): void
     {
-        Page::query()->where('slug', 'hakkimizda')->update([
+        Page::query()->where('slug', 'kullanim-kosullari')->update([
             'status' => PageStatus::Published,
+            'body' => '<p>İçerik [BILINMEYEN_YER_TUTUCU] ile tamamlanmamış.</p>',
         ]);
 
-        $this->get(route('pages.about'))->assertNotFound();
+        $this->get(route('pages.terms'))->assertNotFound();
     }
 
     public function test_doldurulmus_sabit_sayfa_yayinlanabilir(): void
@@ -158,7 +159,7 @@ class AdSenseModuleTest extends TestCase
 
         $this->get(route('pages.about'))
             ->assertOk()
-            ->assertDontSee('[ISLETME_UNVANI]', false);
+            ->assertDontSee('[ŞİRKET_ADI]', false);
     }
 
     public function test_ads_txt_publisher_id_yoksa_sahte_satir_uretmez(): void

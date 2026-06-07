@@ -10,10 +10,12 @@ class ContactController extends Controller
 {
     public function store(StoreContactMessageRequest $request): RedirectResponse
     {
+        $subject = $request->string('subject')->toString();
+
         ContactMessage::query()->create([
             'name' => $request->string('name')->toString(),
             'email' => $request->string('email')->toString(),
-            'subject' => $request->string('subject')->toString(),
+            'subject' => $subject !== '' ? $subject : 'İletişim formu',
             'message' => $request->string('message')->toString(),
             'ip_address' => $request->ip(),
         ]);

@@ -82,7 +82,6 @@ class SiteHardeningTest extends TestCase
         $response = $this->post(route('contact.store'), [
             'name' => 'Ayşe Yılmaz',
             'email' => 'ayse@ornek.com',
-            'subject' => 'İş birliği',
             'message' => 'Merhaba, iş birliği hakkında bilgi almak istiyorum.',
             'privacy_acknowledged' => '1',
         ]);
@@ -92,7 +91,7 @@ class SiteHardeningTest extends TestCase
 
         $this->assertDatabaseHas('contact_messages', [
             'email' => 'ayse@ornek.com',
-            'subject' => 'İş birliği',
+            'subject' => 'İletişim formu',
         ]);
     }
 
@@ -156,7 +155,7 @@ class SiteHardeningTest extends TestCase
         $this->from(route('pages.contact'))
             ->post(route('contact.store'), [])
             ->assertRedirect(route('pages.contact'))
-            ->assertSessionHasErrors(['name', 'email', 'subject', 'message', 'privacy_acknowledged']);
+            ->assertSessionHasErrors(['name', 'email', 'message', 'privacy_acknowledged']);
     }
 
     public function test_iletisim_formu_rate_limit_uygular(): void
@@ -166,7 +165,6 @@ class SiteHardeningTest extends TestCase
         $payload = [
             'name' => 'Test Kullanıcı',
             'email' => 'test@ornek.com',
-            'subject' => 'Konu',
             'message' => 'Mesaj içeriği',
             'privacy_acknowledged' => '1',
         ];

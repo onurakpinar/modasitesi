@@ -53,6 +53,21 @@ class PublicContent
         ];
     }
 
+    /**
+     * Footer "Sayfalar" bölümünde listelenen sabit sayfalar.
+     *
+     * @return list<string>
+     */
+    public static function footerStaticPageSlugs(): array
+    {
+        return [
+            'hakkimizda',
+            'iletisim',
+            'gizlilik-politikasi',
+            'cerez-politikasi',
+        ];
+    }
+
     public static function postQuery(): Builder
     {
         return Post::query()->publiclyVisible();
@@ -80,6 +95,19 @@ class PublicContent
             ->get()
             ->filter(fn (Page $page) => PageTemplates::isPublicReady($page->body ?? ''))
             ->sortBy(fn (Page $page) => array_search($page->slug, $slugs, true))
+            ->values();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, Page>
+     */
+    public static function publishedFooterPages()
+    {
+        $footerSlugs = self::footerStaticPageSlugs();
+
+        return self::publishedStaticPages()
+            ->filter(fn (Page $page) => in_array($page->slug, $footerSlugs, true))
+            ->sortBy(fn (Page $page) => array_search($page->slug, $footerSlugs, true))
             ->values();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Enums\PageStatus;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Support\Legal\LegalPlaceholders;
 use App\Support\Ads\AdSenseValidator;
 use App\Support\Ads\PageTemplates;
 use Illuminate\Foundation\Http\FormRequest;
@@ -75,7 +76,7 @@ class UpdateAdSenseRequest extends FormRequest
             }
 
             if ($this->boolean('contact_information_completed')) {
-                if (filter_var(SiteSetting::get('contact_email'), FILTER_VALIDATE_EMAIL) === false) {
+                if (! LegalPlaceholders::isValidEmail(LegalPlaceholders::effectiveContactEmail(SiteSetting::get('contact_email')))) {
                     $validator->errors()->add('contact_information_completed', 'Geçerli iletişim e-postası site ayarlarında tanımlanmadan işaretlenemez.');
                 }
 

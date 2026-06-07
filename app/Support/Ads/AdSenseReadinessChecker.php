@@ -81,7 +81,9 @@ class AdSenseReadinessChecker
 
     private function hasContactEmail(): bool
     {
-        return filter_var(SiteSetting::get('contact_email'), FILTER_VALIDATE_EMAIL) !== false;
+        return \App\Support\Legal\LegalPlaceholders::isValidEmail(
+            \App\Support\Legal\LegalPlaceholders::effectiveContactEmail(SiteSetting::get('contact_email'))
+        );
     }
 
     private function isPageReady(string $slug): bool
