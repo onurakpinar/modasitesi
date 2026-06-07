@@ -26,9 +26,13 @@ mkdir -p \
     bootstrap/cache \
     database
 
-if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] && [ ! -f database/database.sqlite ]; then
-    log "SQLite veritabanı dosyası oluşturuluyor..."
-    touch database/database.sqlite
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+    DB_FILE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+    if [ ! -f "$DB_FILE" ]; then
+        log "SQLite veritabanı dosyası oluşturuluyor: $DB_FILE"
+        mkdir -p "$(dirname "$DB_FILE")"
+        touch "$DB_FILE"
+    fi
 fi
 
 if [ ! -L public/storage ]; then
