@@ -6,6 +6,10 @@ use App\Support\Ads\AdSettings;
 
 class CookieYesSettings
 {
+    public const ADVERTISEMENT_CATEGORY = 'cookieyes-category-advertisement';
+
+    public const NECESSARY_CATEGORY = 'cookieyes-category-necessary';
+
     public static function enabled(): bool
     {
         return (bool) config('cookieyes.enabled', false);

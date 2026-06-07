@@ -29,7 +29,83 @@ class SecurityHeaders
 
     private function contentSecurityPolicy(): string
     {
-        $adsenseHosts = implode(' ', [
+        $directives = [
+            'default-src' => ["'self'"],
+            'base-uri' => ["'self'"],
+            'form-action' => ["'self'"],
+            'object-src' => ["'none'"],
+            'frame-ancestors' => ["'self'"],
+            'img-src' => ["'self'", 'data:', 'https:'],
+            'font-src' => ["'self'"],
+            'style-src' => ["'self'", "'unsafe-inline'"],
+            'script-src' => ["'self'", "'unsafe-inline'"],
+            'connect-src' => ["'self'"],
+        ];
+
+        if ($this->allowsCookieYesScripts()) {
+            $cookieYesHosts = $this->cookieYesHosts();
+
+            $this->mergeDirectiveSources($directives, 'script-src', $cookieYesHosts);
+            $this->mergeDirectiveSources($directives, 'connect-src', $cookieYesHosts);
+            $this->mergeDirectiveSources($directives, 'style-src', $cookieYesHosts);
+            $this->mergeDirectiveSources($directives, 'font-src', $cookieYesHosts);
+            $this->mergeDirectiveSources($directives, 'frame-src', array_merge(["'self'"], $cookieYesHosts));
+        }
+
+        if ($this->allowsAdSenseScripts()) {
+            $adsenseHosts = $this->adSenseHosts();
+
+            $this->mergeDirectiveSources($directives, 'script-src', $adsenseHosts);
+            $this->mergeDirectiveSources($directives, 'connect-src', $adsenseHosts);
+
+            $frameHosts = [
+                'https://googleads.g.doubleclick.net',
+                'https://tpc.googlesyndication.com',
+                'https://www.google.com',
+            ];
+
+            if (isset($directives['frame-src'])) {
+                $this->mergeDirectiveSources($directives, 'frame-src', $frameHosts);
+            } else {
+                $directives['frame-src'] = array_merge(["'self'"], $frameHosts);
+            }
+        }
+
+        $parts = [];
+
+        foreach ($directives as $name => $sources) {
+            $parts[] = $name.' '.implode(' ', array_unique($sources));
+        }
+
+        return implode('; ', $parts).';';
+    }
+
+    /**
+     * @param  array<string, array<int, string>>  $directives
+     * @param  array<int, string>  $sources
+     */
+    private function mergeDirectiveSources(array &$directives, string $directive, array $sources): void
+    {
+        $directives[$directive] = array_merge($directives[$directive] ?? [], $sources);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function cookieYesHosts(): array
+    {
+        return [
+            'https://cdn-cookieyes.com',
+            'https://log.cookieyes.com',
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function adSenseHosts(): array
+    {
+        return [
             'https://pagead2.googlesyndication.com',
             'https://www.googletagservices.com',
             'https://www.google.com',
@@ -37,48 +113,7 @@ class SecurityHeaders
             'https://tpc.googlesyndication.com',
             'https://partner.googleadservices.com',
             'https://www.gstatic.com',
-        ]);
-
-        $directives = [
-            "default-src 'self'",
-            "base-uri 'self'",
-            "form-action 'self'",
-            "object-src 'none'",
-            "frame-ancestors 'self'",
-            "img-src 'self' data: https:",
-            "font-src 'self'",
-            "style-src 'self' 'unsafe-inline'",
-            "script-src 'self' 'unsafe-inline'",
-            "connect-src 'self'",
         ];
-
-        $scriptHosts = [];
-        $connectHosts = [];
-
-        if ($this->allowsCookieYesScripts()) {
-            $cookieYesHosts = implode(' ', [
-                'https://cdn-cookieyes.com',
-                'https://log.cookieyes.com',
-            ]);
-            $scriptHosts[] = $cookieYesHosts;
-            $connectHosts[] = $cookieYesHosts;
-        }
-
-        if ($this->allowsAdSenseScripts()) {
-            $scriptHosts[] = $adsenseHosts;
-            $connectHosts[] = $adsenseHosts;
-            $directives[] = "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com";
-        }
-
-        if ($scriptHosts !== []) {
-            $directives[7] = "script-src 'self' 'unsafe-inline' ".implode(' ', $scriptHosts);
-        }
-
-        if ($connectHosts !== []) {
-            $directives[8] = "connect-src 'self' ".implode(' ', $connectHosts);
-        }
-
-        return implode('; ', $directives).';';
     }
 
     private function allowsCookieYesScripts(): bool

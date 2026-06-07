@@ -71,5 +71,25 @@ class CookieYesTest extends TestCase
 
         $this->assertStringContainsString('cdn-cookieyes.com', $csp);
         $this->assertStringContainsString('log.cookieyes.com', $csp);
+        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://cdn-cookieyes.com", $csp);
+        $this->assertSame(1, substr_count($csp, 'connect-src'));
+    }
+
+    public function test_cookieyes_body_sonunda_yuklenir(): void
+    {
+        AdSettings::simulateEnvironment('production');
+
+        config([
+            'cookieyes.enabled' => true,
+            'cookieyes.site_id' => self::SITE_ID,
+        ]);
+
+        $html = $this->get(route('home'))->getContent();
+        $cookieYesPosition = strpos($html, 'id="cookieyes"');
+        $footerPosition = strpos($html, '</footer>');
+
+        $this->assertNotFalse($cookieYesPosition);
+        $this->assertNotFalse($footerPosition);
+        $this->assertGreaterThan($footerPosition, $cookieYesPosition);
     }
 }

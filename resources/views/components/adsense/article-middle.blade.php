@@ -3,6 +3,7 @@
 @php
     use App\Support\Ads\AdEligibility;
     use App\Support\Ads\AdSettings;
+    use App\Support\Consent\CookieYesSettings;
 @endphp
 
 @if (AdEligibility::canShowMiddleSlot($post))
@@ -16,6 +17,10 @@
             data-ad-format="auto"
             data-full-width-responsive="true"
         ></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        @if (CookieYesSettings::shouldLoadBanner())
+            <script type="text/plain" data-cookieyes="{{ CookieYesSettings::ADVERTISEMENT_CATEGORY }}">(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        @else
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        @endif
     </aside>
 @endif
