@@ -222,10 +222,14 @@ class AdSenseComplianceTest extends TestCase
     public function test_13_adsense_scripti_tek_sefer_yuklenir(): void
     {
         $this->configureVerificationScript(environment: 'production');
+        AdSettings::setBoolean('certified_cmp_configured', true);
 
         $html = $this->get(route('home'))->getContent();
 
-        $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'));
+        $this->assertStringNotContainsString('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', $html);
+        $this->assertSame(1, substr_count($html, 'adsense-consent.js'));
+        $this->assertStringContainsString('id="adsense-consent-config"', $html);
+        $this->assertStringContainsString(self::CLIENT_ID, $html);
         $this->assertStringContainsString(
             '<meta name="google-adsense-account" content="'.self::CLIENT_ID.'">',
             $html

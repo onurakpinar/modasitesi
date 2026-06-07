@@ -71,7 +71,7 @@ class CookieYesTest extends TestCase
         $this->assertStringNotContainsString('cdn-cookieyes.com', $html);
     }
 
-    public function test_uretimde_reklam_scriptleri_cookieyes_onayina_ertelenir(): void
+    public function test_uretimde_adsense_domda_cookieyes_etiketi_kullanilmaz(): void
     {
         AdSettings::simulateEnvironment('production');
         AdSettings::setBoolean('adsense_verification_enabled', true);
@@ -82,9 +82,11 @@ class CookieYesTest extends TestCase
 
         $html = $this->get(route('home'))->getContent();
 
-        $this->assertStringContainsString('type="text/plain"', $html);
-        $this->assertStringContainsString('data-cookieyes="cookieyes-advertisement"', $html);
-        $this->assertStringNotContainsString('data-cookieyes="cookieyes-necessary"', $html);
+        $this->assertStringNotContainsString('data-cookieyes=', $html);
+        $this->assertStringNotContainsString('type="text/plain"', $html);
+        $this->assertStringNotContainsString('pagead2.googlesyndication.com', $html);
+        $this->assertSame(1, substr_count($html, 'adsense-consent.js'));
+        $this->assertStringContainsString('id="adsense-consent-config"', $html);
     }
 
     public function test_uretimde_cookieyes_icin_csp_domainleri_tanimli(): void
