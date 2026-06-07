@@ -40,8 +40,6 @@ class EditorialArticleLoader
             $body .= $expansion;
         }
 
-        $body = EditorialBodyPadder::pad($body, $title);
-
         return [
             'title' => $article['title'],
             'excerpt' => $article['excerpt'],

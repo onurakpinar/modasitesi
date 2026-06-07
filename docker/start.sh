@@ -59,6 +59,7 @@ fi
 
 log "Editoryal içerik senkronize ediliyor..."
 php artisan content:import-articles --publish --no-ansi || log "UYARI: content:import-articles başarısız."
+php artisan content:clean-plan-residue --no-ansi || log "UYARI: content:clean-plan-residue başarısız."
 
 chown -R www-data:www-data storage bootstrap/cache database
 chmod -R ug+rwx storage bootstrap/cache database
