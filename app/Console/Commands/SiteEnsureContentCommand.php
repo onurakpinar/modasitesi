@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Models\Post;
 use App\Support\HomePageCache;
 use App\Support\Seo\SitemapGenerator;
+use Database\Seeders\CategorySeeder;
 use Database\Seeders\DemoPostSeeder;
+use Database\Seeders\PageSeeder;
 use Illuminate\Console\Command;
 
 class SiteEnsureContentCommand extends Command
@@ -22,6 +24,11 @@ class SiteEnsureContentCommand extends Command
 
         if ($visibleCount === 0) {
             $this->info('Yayınlı yazı bulunamadı; 30 demo yazı yükleniyor…');
+
+            // Demo yazılar kategori ve sayfaların var olmasını gerektirir (idempotent).
+            foreach ([CategorySeeder::class, PageSeeder::class] as $seeder) {
+                $this->call('db:seed', ['--class' => $seeder, '--force' => true]);
+            }
 
             $this->call('db:seed', [
                 '--class' => DemoPostSeeder::class,
