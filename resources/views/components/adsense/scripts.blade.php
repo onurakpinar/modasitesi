@@ -8,14 +8,17 @@
 @else
     @if (AdSettings::shouldLoadVerificationScript())
         @once
-            <script
-                async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}"
-                crossorigin="anonymous"
-                @if (CookieYesSettings::defersAdScriptsUntilConsent())
-                    data-cookieyes="{{ CookieYesSettings::NECESSARY_CATEGORY }}"
-                @endif
-            ></script>
+            @if (CookieYesSettings::defersAdScriptsUntilConsent())
+                <script
+                    type="text/plain"
+                    data-cookieyes="{{ CookieYesSettings::ADVERTISEMENT_CATEGORY }}"
+                    async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}"
+                    crossorigin="anonymous"
+                ></script>
+            @else
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}" crossorigin="anonymous"></script>
+            @endif
         @endonce
     @endif
 

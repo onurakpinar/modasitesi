@@ -172,18 +172,6 @@
         min-height: 90px;
     }
 
-    /* CookieYes banner — site düzeninin üstünde, akışı bozmadan */
-    .cky-consent-container,
-    .cky-modal,
-    .cky-btn-revisit-wrapper,
-    .cky-overlay {
-        z-index: 99999 !important;
-    }
-
-    .cky-consent-container {
-        pointer-events: auto;
-    }
-
     .prose-content a {
         color: var(--color-accent-700);
         text-decoration: underline;

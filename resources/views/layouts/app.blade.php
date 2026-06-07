@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <script src="{{ asset('js/cky-settings.js') }}"></script>
     <!-- Start cookieyes banner -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/c77dde366681a7dc23011d73e38d1542/script.js"></script>
     <!-- End cookieyes banner -->

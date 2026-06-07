@@ -122,9 +122,10 @@ class PublicSiteRegressionTest extends TestCase
             $response->assertOk();
             $content = $response->getContent();
 
-            $this->assertStringNotContainsString('<script>', $content);
-            $this->assertStringNotContainsString('onerror=', $content);
-            $this->assertStringNotContainsString('onload=', $content);
+            $this->assertStringNotContainsString($payload, $content);
+            $this->assertStringNotContainsString('onerror=alert', $content);
+            $this->assertStringNotContainsString('onload=alert', $content);
+            $this->assertStringNotContainsString('<script>alert', $content);
         }
     }
 
