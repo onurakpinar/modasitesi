@@ -94,7 +94,11 @@ class SecurityHeaders
      */
     private function cookieYesHosts(): array
     {
+        // cdn-cookieyes.com is its own registrable domain; *.cookieyes.com does not match it.
         return [
+            'https://cdn-cookieyes.com',
+            'https://log.cookieyes.com',
+            'https://directory.cookieyes.com',
             'https://*.cookieyes.com',
         ];
     }

@@ -69,8 +69,9 @@ class CookieYesTest extends TestCase
 
         $csp = (string) $this->get(route('home'))->assertOk()->headers->get('Content-Security-Policy');
 
-        $this->assertStringContainsString('https://*.cookieyes.com', $csp);
-        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://*.cookieyes.com", $csp);
+        $this->assertStringContainsString('https://cdn-cookieyes.com', $csp);
+        $this->assertStringContainsString('https://directory.cookieyes.com', $csp);
+        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://cdn-cookieyes.com", $csp);
         $this->assertSame(1, substr_count($csp, 'connect-src'));
     }
 
