@@ -164,24 +164,26 @@ class AdSenseModuleTest extends TestCase
             ->assertDontSee('[ŞİRKET_ADI]', false);
     }
 
-    public function test_ads_txt_publisher_id_yoksa_sahte_satir_uretmez(): void
+    public function test_ads_txt_kok_dizinde_mevcut(): void
     {
+        $this->assertFileExists(public_path('ads.txt'));
+
         $content = $this->get(route('ads.txt'))
             ->assertOk()
             ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
             ->getContent();
 
-        $this->assertStringNotContainsString('google.com, pub-', $content);
-        $this->assertStringContainsString('Publisher ID henüz yapılandırılmadı', $content);
+        $this->assertStringContainsString(
+            'google.com, pub-4108324995084946, DIRECT, f08c47fec0942fa0',
+            $content
+        );
     }
 
     public function test_ads_txt_gecerli_publisher_id_ile_uretilir(): void
     {
-        AdSettings::setString('adsense_publisher_id', self::PUBLISHER_ID);
-
         $this->get(route('ads.txt'))
             ->assertOk()
-            ->assertSee('google.com, '.self::PUBLISHER_ID.', DIRECT, f08c47fec0942fa0', false);
+            ->assertSee('google.com, pub-4108324995084946, DIRECT, f08c47fec0942fa0', false);
     }
 
     public function test_admin_adsense_paneli_erisilebilir(): void

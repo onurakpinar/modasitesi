@@ -253,20 +253,23 @@ class AdSenseComplianceTest extends TestCase
             ->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
     }
 
-    public function test_16_publisher_id_yokken_sahte_id_olusturulmaz(): void
+    public function test_16_ads_txt_kok_dizininde_google_satiri_mevcut(): void
     {
+        $this->assertFileExists(public_path('ads.txt'));
+
         $content = $this->get(route('ads.txt'))->getContent();
 
-        $this->assertStringNotContainsString('google.com, pub-', $content);
+        $this->assertStringContainsString(
+            'google.com, pub-4108324995084946, DIRECT, f08c47fec0942fa0',
+            $content
+        );
     }
 
-    public function test_17_gercek_publisher_id_ile_ads_txt_satiri_dogru(): void
+    public function test_17_ads_txt_satiri_dogru_formatta(): void
     {
-        AdSettings::setString('adsense_publisher_id', self::PUBLISHER_ID);
-
         $this->get(route('ads.txt'))
             ->assertOk()
-            ->assertSee('google.com, '.self::PUBLISHER_ID.', DIRECT, f08c47fec0942fa0', false);
+            ->assertSee('google.com, pub-4108324995084946, DIRECT, f08c47fec0942fa0', false);
     }
 
     public function test_18_privacy_sayfasi_eksikken_readiness_hata_gosterir(): void

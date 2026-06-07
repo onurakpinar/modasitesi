@@ -79,6 +79,9 @@ fi
 log "AdSense ortam ayarları senkronize ediliyor..."
 php artisan adsense:sync-env --no-ansi || log "UYARI: adsense:sync-env başarısız."
 
+log "ads.txt güncelleniyor..."
+printf 'google.com, %s, DIRECT, f08c47fec0942fa0\n' "${ADSENSE_PUBLISHER_ID}" > public/ads.txt
+
 log "Editoryal içerik senkronize ediliyor..."
 php artisan content:import-articles --publish --no-ansi || log "UYARI: content:import-articles başarısız."
 php artisan content:clean-plan-residue --no-ansi || log "UYARI: content:clean-plan-residue başarısız."

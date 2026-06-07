@@ -9,6 +9,16 @@ class AdsTxtController extends Controller
 {
     public function index(): Response
     {
+        $staticPath = public_path('ads.txt');
+
+        if (is_file($staticPath)) {
+            $content = file_get_contents($staticPath);
+
+            if (is_string($content) && trim($content) !== '') {
+                return $this->response(rtrim($content)."\n");
+            }
+        }
+
         $publisherId = AdSettings::publisherId();
 
         if ($publisherId === null) {
