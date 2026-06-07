@@ -38,18 +38,26 @@ fi
 log "Paket keşfi..."
 php artisan package:discover --ansi
 
-log "Önbellek optimize ediliyor..."
-if ! php artisan optimize; then
-    log "UYARI: optimize başarısız; temiz önbellekle devam ediliyor (DB/migration kontrol edin)."
-    php artisan optimize:clear || true
+chown -R www-data:www-data storage bootstrap/cache database 2>/dev/null || true
+chmod -R ug+rwx storage bootstrap/cache database 2>/dev/null || true
+
+if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
+    log "Migration çalıştırılıyor..."
+    php artisan migrate --force
+fi
+
+if [ "${RUN_DEMO_SEED:-true}" = "true" ]; then
+    log "İçerik kontrolü (demo yazılar)..."
+    php artisan site:ensure-content --force --no-ansi || log "UYARI: site:ensure-content başarısız."
 fi
 
 chown -R www-data:www-data storage bootstrap/cache database
 chmod -R ug+rwx storage bootstrap/cache database
 
-if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
-    log "Migration çalıştırılıyor..."
-    php artisan migrate --force
+log "Önbellek optimize ediliyor..."
+if ! php artisan optimize; then
+    log "UYARI: optimize başarısız; temiz önbellekle devam ediliyor."
+    php artisan optimize:clear || true
 fi
 
 log "php-fpm başlatılıyor..."
