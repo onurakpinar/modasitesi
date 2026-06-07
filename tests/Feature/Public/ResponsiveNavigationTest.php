@@ -28,7 +28,10 @@ class ResponsiveNavigationTest extends TestCase
             ->assertSee('x-ref="menuButton"', false)
             ->assertSee('id="site-navigation-mobile"', false)
             ->assertSee('aria-controls="site-navigation-mobile"', false)
-            ->assertSee('x-cloak', false);
+            ->assertSee('x-cloak', false)
+            ->assertSee('toggleMobileMenu()', false)
+            ->assertSee('id="site-mobile-menu-overlay"', false)
+            ->assertSee('style="display: none"', false);
     }
 
     public function test_footer_accordion_merkezi_state_kullanir(): void
@@ -70,7 +73,7 @@ class ResponsiveNavigationTest extends TestCase
 
         $this->get(route('home'))
             ->assertOk()
-            ->assertSee('toggleMobileAccordion(\'categories\')', false)
+            ->assertSee('toggleMobileCategories()', false)
             ->assertSee('id="site-navigation-mobile-categories"', false);
     }
 

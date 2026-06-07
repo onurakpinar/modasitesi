@@ -2,14 +2,15 @@ const DESKTOP_MEDIA = '(min-width: 1024px)';
 
 const isDesktopViewport = () => window.matchMedia(DESKTOP_MEDIA).matches;
 
-document.addEventListener('alpine:init', () => {
+export function registerNavigationComponents(Alpine) {
     Alpine.data('siteHeader', () => ({
-        open: false,
+        mobileMenuOpen: false,
         categoriesOpen: false,
-        mobileAccordion: null,
+        mobileCategoriesOpen: false,
         _resizeHandler: null,
 
         init() {
+            this.closeMobileMenu(false);
             this.syncViewport();
             this._resizeHandler = () => this.syncViewport();
             window.addEventListener('resize', this._resizeHandler);
@@ -27,7 +28,7 @@ document.addEventListener('alpine:init', () => {
             this.setHeaderOffset();
 
             if (isDesktopViewport()) {
-                this.resetMobileState();
+                this.closeMobileMenu(false);
             }
         },
 
@@ -41,35 +42,28 @@ document.addEventListener('alpine:init', () => {
             document.documentElement.style.setProperty('--site-header-offset', `${bar.offsetHeight}px`);
         },
 
-        resetMobileState() {
-            this.open = false;
-            this.mobileAccordion = null;
-            document.body.classList.remove('overflow-hidden');
-        },
-
-        toggle() {
-            if (this.open) {
-                this.close();
+        toggleMobileMenu() {
+            if (this.mobileMenuOpen) {
+                this.closeMobileMenu();
 
                 return;
             }
 
-            this.open = true;
+            this.mobileMenuOpen = true;
             this.categoriesOpen = false;
-            this.mobileAccordion = null;
+            this.mobileCategoriesOpen = false;
             document.body.classList.add('overflow-hidden');
             this.$nextTick(() => this.$refs.mobileNav?.querySelector('a, button')?.focus());
         },
 
-        close() {
-            if (!this.open) {
-                return;
-            }
-
-            this.open = false;
-            this.mobileAccordion = null;
+        closeMobileMenu(focusButton = true) {
+            this.mobileMenuOpen = false;
+            this.mobileCategoriesOpen = false;
             document.body.classList.remove('overflow-hidden');
-            this.$nextTick(() => this.$refs.menuButton?.focus());
+
+            if (focusButton) {
+                this.$nextTick(() => this.$refs.menuButton?.focus());
+            }
         },
 
         toggleCategories() {
@@ -80,12 +74,8 @@ document.addEventListener('alpine:init', () => {
             this.categoriesOpen = false;
         },
 
-        toggleMobileAccordion(id) {
-            this.mobileAccordion = this.mobileAccordion === id ? null : id;
-        },
-
-        isMobileAccordionOpen(id) {
-            return this.mobileAccordion === id;
+        toggleMobileCategories() {
+            this.mobileCategoriesOpen = !this.mobileCategoriesOpen;
         },
     }));
 
@@ -162,4 +152,4 @@ document.addEventListener('alpine:init', () => {
             }
         },
     }));
-});
+}

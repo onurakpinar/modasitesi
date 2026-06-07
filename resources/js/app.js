@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
-import './navigation';
+import { registerNavigationComponents } from './navigation';
 
 window.Alpine = Alpine;
 
+registerNavigationComponents(Alpine);
 Alpine.start();

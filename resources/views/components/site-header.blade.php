@@ -5,7 +5,7 @@
 <header
     class="relative z-40 border-b border-stone-200 bg-white"
     x-data="siteHeader()"
-    @keydown.escape.window="close(); closeCategories()"
+    @keydown.escape.window="closeMobileMenu(); closeCategories()"
 >
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <div
@@ -13,7 +13,7 @@
             data-site-header-bar
             class="flex items-center justify-between gap-3 py-4 sm:gap-4 sm:py-5"
         >
-            <a href="{{ route('home') }}" class="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4 lg:flex-none" @click="close()">
+            <a href="{{ route('home') }}" class="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4 lg:flex-none" @click="closeMobileMenu()">
                 @if ($logoUrl)
                     <img
                         src="{{ $logoUrl }}"
@@ -53,7 +53,7 @@
                             type="button"
                             class="inline-flex min-h-11 items-center gap-1.5 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 {{ request()->routeIs('categories.show') ? 'text-accent-700' : '' }}"
                             @click="toggleCategories()"
-                            :aria-expanded="categoriesOpen"
+                            :aria-expanded="categoriesOpen.toString()"
                             aria-controls="site-navigation-categories"
                             aria-haspopup="true"
                         >
@@ -74,6 +74,7 @@
                             id="site-navigation-categories"
                             x-show="categoriesOpen"
                             x-cloak
+                            style="display: none"
                             x-transition:enter="transition ease-out duration-150"
                             x-transition:enter-start="opacity-0 translate-y-1"
                             x-transition:enter-end="opacity-100 translate-y-0"
@@ -117,22 +118,24 @@
                     type="button"
                     x-ref="menuButton"
                     class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
-                    @click="toggle()"
-                    :aria-expanded="open"
+                    @click="toggleMobileMenu()"
+                    :aria-expanded="mobileMenuOpen.toString()"
                     aria-controls="site-navigation-mobile"
                     aria-label="Menüyü aç veya kapat"
                 >
                     <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
-                        <path x-show="open" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="mobileMenuOpen" x-cloak style="display: none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
 
         <div
-            x-show="open"
+            id="site-mobile-menu-overlay"
+            x-show="mobileMenuOpen"
             x-cloak
+            style="display: none"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
@@ -140,7 +143,7 @@
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             class="fixed inset-0 top-[var(--site-header-offset,4.5rem)] z-30 bg-stone-900/20 lg:hidden"
-            @click="close()"
+            @click="closeMobileMenu()"
             aria-hidden="true"
         ></div>
 
@@ -148,32 +151,33 @@
             id="site-navigation-mobile"
             x-ref="mobileNav"
             aria-label="Mobil menü"
-            x-show="open"
+            x-show="mobileMenuOpen"
             x-cloak
+            style="display: none"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2"
             x-transition:enter-end="opacity-100 translate-y-0"
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2"
-            class="relative z-40 max-h-[calc(100dvh-var(--site-header-offset,5rem))] overflow-y-auto border-t border-stone-100 bg-white pb-4 lg:hidden"
+            class="relative z-40 max-h-[calc(100dvh-var(--site-header-offset,5rem))] overflow-y-auto border-t border-stone-100 bg-white pb-2 lg:hidden"
         >
-            <a href="{{ route('home') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ana Sayfa</a>
-            <a href="{{ route('posts.index') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Yazılar</a>
+            <a href="{{ route('home') }}" class="flex min-h-11 items-center px-1 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="closeMobileMenu()">Ana Sayfa</a>
+            <a href="{{ route('posts.index') }}" class="flex min-h-11 items-center px-1 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="closeMobileMenu()">Yazılar</a>
 
             @if ($navCategories->isNotEmpty())
-                <div class="border-t border-stone-50">
+                <div class="border-t border-stone-100">
                     <button
                         type="button"
-                        class="flex min-h-11 w-full items-center justify-between py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2"
-                        @click="toggleMobileAccordion('categories')"
-                        :aria-expanded="isMobileAccordionOpen('categories')"
+                        class="flex min-h-11 w-full items-center justify-between px-1 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2"
+                        @click="toggleMobileCategories()"
+                        :aria-expanded="mobileCategoriesOpen.toString()"
                         aria-controls="site-navigation-mobile-categories"
                     >
                         Kategoriler
                         <svg
                             class="size-4 shrink-0 transition-transform duration-200"
-                            :class="{ 'rotate-180': isMobileAccordionOpen('categories') }"
+                            :class="{ 'rotate-180': mobileCategoriesOpen }"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -184,18 +188,19 @@
                     </button>
                     <div
                         id="site-navigation-mobile-categories"
-                        x-show="isMobileAccordionOpen('categories')"
+                        x-show="mobileCategoriesOpen"
                         x-cloak
+                        style="display: none"
                         x-transition:enter="transition ease-out duration-150"
                         x-transition:enter-start="opacity-0 -translate-y-1"
                         x-transition:enter-end="opacity-100 translate-y-0"
-                        class="pb-2 pl-3"
+                        class="space-y-0 border-t border-stone-50 pb-2 pl-3"
                     >
                         @foreach ($navCategories as $category)
                             <a
                                 href="{{ route('categories.show', $category->slug) }}"
-                                class="block min-h-11 py-2.5 text-sm font-medium normal-case tracking-normal text-stone-600 hover:text-accent-700"
-                                @click="close()"
+                                class="flex min-h-10 items-center py-1 text-sm font-medium normal-case tracking-normal text-stone-600 hover:text-accent-700"
+                                @click="closeMobileMenu()"
                             >
                                 {{ $category->name }}
                             </a>
@@ -204,7 +209,7 @@
                 </div>
             @endif
 
-            <a href="{{ route('search') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ara</a>
+            <a href="{{ route('search') }}" class="flex min-h-11 items-center border-t border-stone-100 px-1 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="closeMobileMenu()">Ara</a>
         </nav>
     </div>
 </header>
