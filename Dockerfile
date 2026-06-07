@@ -50,14 +50,14 @@ COPY --from=vendor /app /var/www/html
 COPY --from=assets /app/public/build /var/www/html/public/build
 
 RUN chmod +x /usr/local/bin/start.sh \
-    && mkdir -p storage/framework/{cache,sessions,views} storage/app/public bootstrap/cache \
+    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/app/public bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && test ! -f .env
 
 EXPOSE 8080
 
 # Liveness: uygulama ayağa kalktı mı (DB gerekmez)
-HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+HEALTHCHECK --interval=15s --timeout=10s --start-period=120s --retries=5 \
     CMD curl -fsS http://127.0.0.1:8080/up || exit 1
 
 CMD ["/usr/local/bin/start.sh"]

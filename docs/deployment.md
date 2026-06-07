@@ -48,6 +48,21 @@ Yerel geliştirmede `.env` içinde `APP_ENV=local` ve `APP_DEBUG=true` kullanın
 3. Coolify otomatik olarak `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` değişkenlerini enjekte eder.
 4. Karakter seti: `utf8mb4` / `utf8mb4_unicode_ci`
 
+### İlk deploy kontrol listesi (zorunlu)
+
+Deploy öncesi Coolify’da şunlar **mutlaka** tanımlı olmalı; aksi halde container başlar başlamaz kapanır ve health check düşer:
+
+| Değişken | Örnek | Not |
+|----------|-------|-----|
+| `APP_KEY` | `base64:xxxx...` | **Zorunlu.** Yerelde: `php artisan key:generate --show` |
+| `APP_ENV` | `production` | |
+| `APP_DEBUG` | `false` | |
+| `APP_URL` | `https://alanadiniz.com` | Coolify FQDN veya özel domain |
+| `DB_*` | MySQL link | MySQL servisini uygulamaya bağlayın |
+| Port (Coolify) | `8080` | Build → Ports / Network |
+
+İlk kurulumda migration için geçici olarak `RUN_MIGRATIONS=true` verip bir deploy sonrası `false` yapabilirsiniz; veya container shell’den `php artisan migrate --force`.
+
 ### Environment variable tanımlama
 
 Coolify → Application → Environment Variables bölümünde en az şunları tanımlayın:
@@ -305,6 +320,8 @@ Coolify logunda `Found application type: php` ve `composer install` sırasında 
 | Belirti | Olası çözüm |
 |---------|-------------|
 | Nixpacks + composer syntax error | Build Pack → Dockerfile, Port 8080 |
+| Health check failed / container exits | `APP_KEY` tanımlı mı? Port 8080? Container loglarına bakın |
+| `APP_KEY tanımlı değil` logu | Coolify env: `APP_KEY=base64:...` (`php artisan key:generate --show`) |
 | 502/503 | `php artisan site:readiness`, DB bağlantısı, container logları |
 | Görseller görünmüyor | `storage:link`, `storage/app/public` izinleri |
 | CSS yok | `npm run build`, `public/build` dizini |
