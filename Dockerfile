@@ -58,7 +58,7 @@ RUN chmod +x /usr/local/bin/start.sh \
 EXPOSE 8080
 
 # Liveness: uygulama ayağa kalktı mı (DB gerekmez)
-HEALTHCHECK --interval=15s --timeout=10s --start-period=120s --retries=5 \
+HEALTHCHECK --interval=15s --timeout=10s --start-period=10s --retries=5 \
     CMD curl -fsS http://127.0.0.1:8080/up || exit 1
 
 CMD ["/usr/local/bin/start.sh"]
