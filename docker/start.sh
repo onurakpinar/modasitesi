@@ -75,13 +75,6 @@ fi
 if [ -z "${CERTIFIED_CMP_CONFIGURED:-}" ]; then
     export CERTIFIED_CMP_CONFIGURED="true"
 fi
-if [ -z "${COOKIEYES_ENABLED:-}" ]; then
-    export COOKIEYES_ENABLED="true"
-fi
-if [ -z "${COOKIEYES_SITE_ID:-}" ]; then
-    export COOKIEYES_SITE_ID="c77dde366681a7dc23011d73e38d1542"
-fi
-
 log "AdSense ortam ayarları senkronize ediliyor..."
 php artisan adsense:sync-env --no-ansi || log "UYARI: adsense:sync-env başarısız."
 

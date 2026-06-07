@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- Start cookieyes banner -->
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/c77dde366681a7dc23011d73e38d1542/script.js"></script>
+    <!-- End cookieyes banner -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <x-cookieyes.banner />
     @isset($seoMeta)
         <x-seo-head :meta="$seoMeta" />
     @else

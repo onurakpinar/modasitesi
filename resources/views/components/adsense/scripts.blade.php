@@ -12,7 +12,7 @@
                 async
                 src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}"
                 crossorigin="anonymous"
-                @if (CookieYesSettings::shouldLoadBanner())
+                @if (CookieYesSettings::defersAdScriptsUntilConsent())
                     data-cookieyes="{{ CookieYesSettings::NECESSARY_CATEGORY }}"
                 @endif
             ></script>
@@ -27,7 +27,7 @@
         && AdSettings::isProductionEnvironment()
     )
         @once
-            @if (CookieYesSettings::shouldLoadBanner())
+            @if (CookieYesSettings::defersAdScriptsUntilConsent())
                 <script type="text/plain" data-cookieyes="{{ CookieYesSettings::ADVERTISEMENT_CATEGORY }}">
                     (adsbygoogle = window.adsbygoogle || []).push({ google_ad_client: "{{ AdSettings::clientId() }}", enable_page_level_ads: true });
                 </script>

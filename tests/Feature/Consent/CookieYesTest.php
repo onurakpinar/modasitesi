@@ -11,7 +11,7 @@ class CookieYesTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const SITE_ID = 'c77dde366681a7dc23011d73e38d1542';
+    private const SCRIPT_SNIPPET = 'https://cdn-cookieyes.com/client_data/c77dde366681a7dc23011d73e38d1542/script.js';
 
     protected function setUp(): void
     {
@@ -28,71 +28,64 @@ class CookieYesTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_yerel_ortamda_cookieyes_yuklenmez(): void
+    public function test_public_layout_cookieyes_scriptini_tek_sefer_render_eder(): void
     {
-        config([
-            'cookieyes.enabled' => true,
-            'cookieyes.site_id' => self::SITE_ID,
-        ]);
-
         $html = $this->get(route('home'))->getContent();
+
+        $this->assertSame(1, substr_count($html, 'id="cookieyes"'));
+        $this->assertStringContainsString('<!-- Start cookieyes banner -->', $html);
+        $this->assertStringContainsString(self::SCRIPT_SNIPPET, $html);
+        $this->assertStringContainsString('<!-- End cookieyes banner -->', $html);
+    }
+
+    public function test_cookieyes_scripti_head_basinda_adsense_oncesi_yuklenir(): void
+    {
+        $html = $this->get(route('home'))->getContent();
+
+        $headPosition = strpos($html, '<head>');
+        $cookieYesPosition = strpos($html, 'id="cookieyes"');
+        $charsetPosition = strpos($html, 'charset="utf-8"');
+        $siteHeadPosition = strpos($html, '@vite') ?: strpos($html, 'build/assets/app-') ?: strpos($html, 'rel="stylesheet"');
+
+        $this->assertNotFalse($headPosition);
+        $this->assertNotFalse($cookieYesPosition);
+        $this->assertNotFalse($charsetPosition);
+        $this->assertGreaterThan($headPosition, $cookieYesPosition);
+        $this->assertLessThan($charsetPosition, $cookieYesPosition);
+
+        if ($siteHeadPosition !== false) {
+            $this->assertLessThan($siteHeadPosition, $cookieYesPosition);
+        }
+    }
+
+    public function test_admin_layout_cookieyes_scripti_icermez(): void
+    {
+        $admin = \App\Models\User::factory()->superAdmin()->create();
+
+        $html = $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->getContent();
 
         $this->assertStringNotContainsString('cdn-cookieyes.com', $html);
     }
 
-    public function test_uretimde_cookieyes_banner_yuklenir(): void
+    public function test_uretimde_cookieyes_icin_csp_domainleri_tanimli(): void
     {
         AdSettings::simulateEnvironment('production');
-
-        config([
-            'cookieyes.enabled' => true,
-            'cookieyes.site_id' => self::SITE_ID,
-        ]);
-
-        $html = $this->get(route('home'))->getContent();
-
-        $this->assertStringContainsString('id="cookieyes"', $html);
-        $this->assertStringContainsString(
-            'https://cdn-cookieyes.com/client_data/'.self::SITE_ID.'/script.js',
-            $html
-        );
-    }
-
-    public function test_uretimde_cookieyes_icin_csp_genisletilir(): void
-    {
-        AdSettings::simulateEnvironment('production');
-
-        config([
-            'cookieyes.enabled' => true,
-            'cookieyes.site_id' => self::SITE_ID,
-        ]);
 
         $csp = (string) $this->get(route('home'))->assertOk()->headers->get('Content-Security-Policy');
 
         $this->assertStringContainsString('https://cdn-cookieyes.com', $csp);
         $this->assertStringContainsString('https://directory.cookieyes.com', $csp);
-        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://cdn-cookieyes.com", $csp);
+        $this->assertStringContainsString('https://log.cookieyes.com', $csp);
+        $this->assertStringNotContainsString('https://*.cookieyes.com', $csp);
         $this->assertSame(1, substr_count($csp, 'connect-src'));
     }
 
-    public function test_cookieyes_head_icinde_erken_yuklenir(): void
+    public function test_cerez_politikasi_sayfasi_erisilebilir(): void
     {
-        AdSettings::simulateEnvironment('production');
-
-        config([
-            'cookieyes.enabled' => true,
-            'cookieyes.site_id' => self::SITE_ID,
-        ]);
-
-        $html = $this->get(route('home'))->getContent();
-        $viewportPosition = strpos($html, 'name="viewport"');
-        $cookieYesPosition = strpos($html, 'id="cookieyes"');
-        $titlePosition = strpos($html, '<title>');
-
-        $this->assertNotFalse($viewportPosition);
-        $this->assertNotFalse($cookieYesPosition);
-        $this->assertNotFalse($titlePosition);
-        $this->assertGreaterThan($viewportPosition, $cookieYesPosition);
-        $this->assertLessThan($titlePosition, $cookieYesPosition);
+        $this->get(route('pages.cookies'))
+            ->assertOk()
+            ->assertSee('Çerez', false);
     }
 }

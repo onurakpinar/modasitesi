@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Support\Ads\AdSettings;
-use App\Support\Consent\CookieYesSettings;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,12 +93,10 @@ class SecurityHeaders
      */
     private function cookieYesHosts(): array
     {
-        // cdn-cookieyes.com is its own registrable domain; *.cookieyes.com does not match it.
         return [
             'https://cdn-cookieyes.com',
             'https://log.cookieyes.com',
             'https://directory.cookieyes.com',
-            'https://*.cookieyes.com',
         ];
     }
 
@@ -125,7 +122,7 @@ class SecurityHeaders
             return false;
         }
 
-        return CookieYesSettings::enabled() && CookieYesSettings::siteId() !== null;
+        return true;
     }
 
     private function allowsAdSenseScripts(): bool
