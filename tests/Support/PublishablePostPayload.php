@@ -20,7 +20,7 @@ trait PublishablePostPayload
             'category_id' => $category->id,
             'title' => 'Kaliteli Moda Yazısı Başlığı Yeterince Uzundur',
             'excerpt' => 'Bu özet metni, yayın kalitesi standartlarını karşılayacak şekilde hazırlanmış özgün bir moda yazısı girişidir ve okura kapsamı net biçimde aktarır.',
-            'body' => '<h2>Bölüm</h2><p>'.implode(' ', array_fill(0, 900, 'moda')).'</p>',
+            'body' => '<h2>Bölüm</h2><p>'.implode(' ', array_fill(0, 700, 'moda')).'</p>',
             'status' => PostStatus::Published->value,
             'cover_image' => UploadedFile::fake()->image('cover.jpg', 1600, 900),
             'cover_image_alt' => 'Kış modasında katmanlı giyim örneği',

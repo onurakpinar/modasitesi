@@ -55,7 +55,7 @@
 
 <div>
     <label class="block text-sm font-medium text-stone-700">İçerik</label>
-    <p class="mt-1 text-xs text-stone-500">Sayfa başlığı H1 olarak kullanılır. İçerikte yalnızca H2 ve H3 kullanın. Yayın için en az 900 kelime gerekir.</p>
+    <p class="mt-1 text-xs text-stone-500">Sayfa başlığı H1 olarak kullanılır. İçerikte yalnızca H2 ve H3 kullanın. Yayın için en az 700 kelime gerekir.</p>
     <input id="body-input" type="hidden" name="body" value="{{ old('body', $post?->body) }}">
     <trix-editor input="body-input" class="trix-content mt-2 min-h-[320px] border border-stone-300 bg-white @error('body') border-rose-500 @enderror"></trix-editor>
     @error('body')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror

@@ -49,7 +49,7 @@ class DemoPostSeederTest extends TestCase
         Post::query()->where('status', PostStatus::Draft)->each(function (Post $post): void {
             $this->assertNotNull($post->cover_image);
             $this->assertNotNull($post->cover_image_fallback);
-            $this->assertGreaterThanOrEqual(900, str_word_count(strip_tags($post->body)));
+            $this->assertGreaterThanOrEqual(700, str_word_count(strip_tags($post->body)));
         });
     }
 }

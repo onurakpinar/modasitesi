@@ -133,12 +133,12 @@ class AdSenseComplianceTest extends TestCase
         $this->assertStringNotContainsString('adsbygoogle', $html);
     }
 
-    public function test_07_899_kelimelik_yazida_reklam_gosterilmez(): void
+    public function test_07_699_kelimelik_yazida_reklam_gosterilmez(): void
     {
         $this->enableProductionAds();
 
         $post = Post::factory()->published()->create([
-            'body' => $this->bodyWithWordCount(899),
+            'body' => $this->bodyWithWordCount(699),
         ]);
 
         $this->get(route('posts.show', $post->slug))

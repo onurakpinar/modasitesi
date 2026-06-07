@@ -14,7 +14,7 @@ class PostQualityChecker
 
     public const MAX_EXCERPT_LENGTH = 260;
 
-    public const MIN_WORD_COUNT = 900;
+    public const MIN_WORD_COUNT = 700;
 
     public const MIN_META_DESCRIPTION_LENGTH = 120;
 

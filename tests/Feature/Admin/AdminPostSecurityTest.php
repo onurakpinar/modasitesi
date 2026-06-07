@@ -38,12 +38,12 @@ class AdminPostSecurityTest extends TestCase
         $this->category = Category::factory()->create();
     }
 
-    public function test_899_kelimelik_yazi_yayinlanamaz(): void
+    public function test_699_kelimelik_yazi_yayinlanamaz(): void
     {
         $response = $this->actingAs($this->admin)->from(route('admin.posts.create'))->post(
             route('admin.posts.store'),
             $this->publishablePayload($this->author, $this->category, [
-                'body' => $this->bodyWithWordCount(899),
+                'body' => $this->bodyWithWordCount(699),
             ])
         );
 
@@ -290,13 +290,13 @@ class AdminPostSecurityTest extends TestCase
         $response = $this->actingAs($this->admin)->from(route('admin.posts.create'))->post(
             route('admin.posts.store'),
             $this->publishablePayload($this->author, $this->category, [
-                'body' => $this->bodyWithWordCount(899),
+                'body' => $this->bodyWithWordCount(699),
             ])
         );
 
         $response->assertSessionHasErrors('body');
 
-        $turkishWords = array_merge(array_fill(0, 898, 'moda'), ['şişe', 'çanta']);
+        $turkishWords = array_merge(array_fill(0, 698, 'moda'), ['şişe', 'çanta']);
 
         $this->actingAs($this->admin)->post(
             route('admin.posts.store'),

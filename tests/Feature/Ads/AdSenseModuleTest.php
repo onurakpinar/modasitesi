@@ -95,7 +95,7 @@ class AdSenseModuleTest extends TestCase
     public function test_reklam_kutulari_varsayilan_olarak_render_edilmez(): void
     {
         $post = Post::factory()->published()->create([
-            'body' => $this->bodyWithWordCount(900),
+            'body' => $this->bodyWithWordCount(700),
         ]);
 
         $html = $this->get(route('posts.show', $post->slug))->getContent();
@@ -219,7 +219,7 @@ class AdSenseModuleTest extends TestCase
 
         $admin = User::factory()->superAdmin()->create();
         $post = Post::factory()->published()->create([
-            'body' => $this->bodyWithWordCount(900),
+            'body' => $this->bodyWithWordCount(700),
         ]);
 
         $previewUrl = URL::temporarySignedRoute('admin.posts.preview', now()->addHour(), ['post' => $post->id]);
