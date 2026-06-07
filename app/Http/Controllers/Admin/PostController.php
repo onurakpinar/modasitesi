@@ -86,6 +86,7 @@ class PostController extends Controller
         ]);
 
         $validated = $this->prepareAttributes($request, $sanitizer, $post);
+        $bodyChanged = array_key_exists('body', $validated) && $validated['body'] !== $post->body;
 
         if ($request->hasFile('cover_image')) {
             $uploader->delete($post->cover_image, $post->cover_image_fallback);
@@ -103,6 +104,10 @@ class PostController extends Controller
 
         $validated['slug'] = $validated['slug'] ?? Post::generateUniqueSlug($validated['title'], $post->id);
         $oldSlug = $post->slug;
+
+        if ($bodyChanged) {
+            $validated['content_updated_at'] = now();
+        }
 
         $post->update($validated);
 
@@ -156,6 +161,9 @@ class PostController extends Controller
     {
         $validated = $request->validated();
         $validated['body'] = $sanitizer->sanitize($validated['body'] ?? '');
+        $validated['sources'] = filled($validated['sources'] ?? null)
+            ? $sanitizer->sanitize($validated['sources'])
+            : null;
         $validated['is_featured'] = $request->boolean('is_featured');
 
         $status = $validated['status'] instanceof PostStatus

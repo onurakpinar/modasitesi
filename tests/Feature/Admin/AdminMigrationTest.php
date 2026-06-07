@@ -28,7 +28,7 @@ class AdminMigrationTest extends TestCase
 
     public function test_rollback_ve_yeniden_migrate_calisir(): void
     {
-        $this->artisan('migrate:rollback', ['--step' => 11])->assertSuccessful();
+        $this->artisan('migrate:rollback', ['--step' => 12])->assertSuccessful();
         $this->assertFalse(Schema::hasTable('posts'));
         $this->assertFalse(Schema::hasTable('categories'));
 

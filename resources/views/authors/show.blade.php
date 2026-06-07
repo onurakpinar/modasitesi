@@ -23,7 +23,14 @@
             <div class="min-w-0 max-w-2xl">
                 <p class="text-xs font-medium uppercase tracking-[0.2em] text-accent-700">Yazar</p>
                 <h1 class="mt-2 break-words font-display text-3xl text-stone-900 sm:text-4xl">{{ $author->name }}</h1>
-                @if ($author->short_bio)
+                @if ($author->expertise)
+                    <p class="mt-3 text-sm font-medium text-accent-700">{{ $author->expertise }}</p>
+                @endif
+                @if ($author->bio)
+                    <div class="mt-4 whitespace-pre-line text-base leading-relaxed text-stone-600">
+                        {{ $author->bio }}
+                    </div>
+                @elseif ($author->short_bio)
                     <p class="mt-4 text-base leading-relaxed text-stone-600">{{ $author->short_bio }}</p>
                 @endif
             </div>

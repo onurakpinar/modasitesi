@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Support\HomePageCache;
 use App\Support\Seo\SitemapGenerator;
@@ -12,9 +13,11 @@ use Illuminate\Console\Command;
 
 class SiteEnsureContentCommand extends Command
 {
-    protected $signature = 'site:ensure-content {--force : Üretim ortamında seed çalıştır}';
+    protected $signature = 'site:ensure-content
+                            {--force : Üretim ortamında seed çalıştır}
+                            {--demo : Demo yazıları taslak olarak yükler (otomatik yayınlamaz)}';
 
-    protected $description = 'Yayınlı yazı yoksa demo blog içeriğini yükler ve önbelleği temizler';
+    protected $description = 'Migration ve önbellek kontrolü; isteğe bağlı demo içerik (taslak) yükler';
 
     public function handle(HomePageCache $homePageCache, SitemapGenerator $sitemapGenerator): int
     {
@@ -22,10 +25,9 @@ class SiteEnsureContentCommand extends Command
 
         $visibleCount = Post::query()->publiclyVisible()->count();
 
-        if ($visibleCount === 0) {
-            $this->info('Yayınlı yazı bulunamadı; 30 demo yazı yükleniyor…');
+        if ($this->option('demo')) {
+            $this->info('Demo yazılar taslak olarak yükleniyor…');
 
-            // Demo yazılar kategori ve sayfaların var olmasını gerektirir (idempotent).
             foreach ([CategorySeeder::class, PageSeeder::class] as $seeder) {
                 $this->call('db:seed', ['--class' => $seeder, '--force' => true]);
             }
@@ -35,15 +37,10 @@ class SiteEnsureContentCommand extends Command
                 '--force' => $this->option('force') || true,
             ]);
 
-            $visibleCount = Post::query()->publiclyVisible()->count();
-
-            if ($visibleCount === 0) {
-                $this->error('Demo içerik yüklenemedi. Migration ve storage izinlerini kontrol edin.');
-
-                return self::FAILURE;
-            }
-
-            $this->info("{$visibleCount} yayınlı yazı yüklendi.");
+            $draftCount = Post::query()->where('status', PostStatus::Draft)->count();
+            $this->info("Demo yükleme tamamlandı. Taslak yazı: {$draftCount}; yayında: {$visibleCount}.");
+        } elseif ($visibleCount === 0) {
+            $this->warn('Yayınlı yazı yok. Özgün içerik ekleyin veya geliştirme için: php artisan site:ensure-content --demo');
         } else {
             $this->comment("Yayınlı yazılar mevcut ({$visibleCount}).");
         }

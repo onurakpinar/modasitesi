@@ -251,7 +251,9 @@ class SeoInfrastructureTest extends TestCase
         $article = collect($schemas)->first(fn ($s) => ($s['@type'] ?? null) === 'Article');
         $this->assertNotNull($article);
         $this->assertSame('Gerçek Yazar', $article['author']['name'] ?? null);
+        $this->assertSame(route('authors.show', $author->slug), $article['author']['url'] ?? null);
         $this->assertSame('JSON-LD Test Yazısı', $article['headline'] ?? null);
+        $this->assertSame('GOAT Bilişim Teknolojileri Ticaret A.Ş.', $article['publisher']['name'] ?? null);
     }
 
     public function test_ana_sayfa_json_ld_sahte_sirket_verisi_icermez(): void

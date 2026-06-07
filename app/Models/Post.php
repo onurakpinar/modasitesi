@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'author_id', 'category_id', 'title', 'slug', 'excerpt', 'body',
-    'cover_image', 'cover_image_fallback', 'cover_image_width', 'cover_image_height', 'cover_image_alt', 'status', 'published_at', 'is_featured',
+    'author_id', 'category_id', 'title', 'slug', 'excerpt', 'body', 'sources',
+    'cover_image', 'cover_image_fallback', 'cover_image_width', 'cover_image_height', 'cover_image_alt', 'status', 'published_at', 'content_updated_at', 'is_featured',
     'meta_title', 'meta_description', 'canonical_url',
     'originality_confirmed_at', 'human_reviewed_at',
 ])]
@@ -28,6 +28,7 @@ class Post extends Model
         return [
             'status' => PostStatus::class,
             'published_at' => 'datetime',
+            'content_updated_at' => 'datetime',
             'is_featured' => 'boolean',
             'originality_confirmed_at' => 'datetime',
             'human_reviewed_at' => 'datetime',

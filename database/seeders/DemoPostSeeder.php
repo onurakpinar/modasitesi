@@ -84,7 +84,7 @@ class DemoPostSeeder extends Seeder
                     'cover_image_width' => $cover['width'],
                     'cover_image_height' => $cover['height'],
                     'cover_image_alt' => (string) ($brief['cover_image_note'] ?? $title),
-                    'status' => PostStatus::Published,
+                    'status' => PostStatus::Draft,
                     'published_at' => Carbon::now()->subDays(90 - ($index * 3))->setTime(9, 0),
                     'is_featured' => in_array($index, [0, 1, 2, 4, 7, 10, 14, 18], true),
                     'meta_title' => mb_substr($title, 0, 60),
@@ -100,7 +100,8 @@ class DemoPostSeeder extends Seeder
         app(HomePageCache::class)->forget();
         app(SitemapGenerator::class)->forget();
 
-        $this->command?->info('Tamamlandı: '.Post::query()->publiclyVisible()->count().' yayınlı yazı.');
+        $draftCount = Post::query()->where('status', PostStatus::Draft)->count();
+        $this->command?->info("Tamamlandı: {$draftCount} taslak demo yazı (otomatik yayınlanmaz).");
     }
 
     /**
@@ -149,16 +150,19 @@ class DemoPostSeeder extends Seeder
                 'name' => 'Elif Kaya',
                 'email' => 'elif.kaya@modapusula.test',
                 'short_bio' => 'Stil editörü. Kadın modası, gardırop planlaması ve günlük kombin üzerine özgün rehberler yazar.',
+                'expertise' => 'Kadın modası ve gardırop planlama',
             ],
             'deniz' => [
                 'name' => 'Deniz Arslan',
                 'email' => 'deniz.arslan@modapusula.test',
                 'short_bio' => 'Erkek modası ve aksesuar editörü. İş ve casual stil, ayakkabı ve dış giyim konularında uzmanlaşmıştır.',
+                'expertise' => 'Erkek modası ve aksesuar',
             ],
             'meryem' => [
                 'name' => 'Meryem Aksoy',
                 'email' => 'meryem.aksoy@modapusula.test',
                 'short_bio' => 'Sürdürülebilir moda yazarı. Bilinçli tüketim, bakım rutinleri ve sezon geçişleri üzerine çalışır.',
+                'expertise' => 'Sürdürülebilir moda',
             ],
         ];
 
@@ -171,10 +175,13 @@ class DemoPostSeeder extends Seeder
                     'name' => $data['name'],
                     'slug' => Author::generateUniqueSlug($data['name']),
                     'short_bio' => $data['short_bio'],
+                    'expertise' => $data['expertise'] ?? null,
                     'is_active' => true,
                 ]
             );
         }
+
+        $this->call(AuthorEeatSeeder::class);
 
         return $authors;
     }

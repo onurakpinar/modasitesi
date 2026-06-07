@@ -65,7 +65,6 @@ class DemoPostBodyWriter
     private static function paragraph(array $brief, string $heading, int $sectionIndex, int $paragraphIndex): string
     {
         $audience = (string) ($brief['target_audience'] ?? 'okur');
-        $notes = (string) ($brief['notes'] ?? '');
         $seed = crc32($heading.'|'.$sectionIndex.'|'.$paragraphIndex);
 
         $openers = [
@@ -89,10 +88,6 @@ class DemoPostBodyWriter
             'Bu yaklaşım, gardırobunuzu kişisel yaşam temponuza göre özelleştirmenize olanak tanır.',
             'Sonuç olarak daha tutarlı, özenli ve kendinize yakışan bir görünüm elde edersiniz.',
         ];
-
-        if ($notes !== '') {
-            $closers[] = "Editoryal not: {$notes}";
-        }
 
         $opener = $openers[$seed % count($openers)];
         $middle = $middles[($seed >> 3) % count($middles)];

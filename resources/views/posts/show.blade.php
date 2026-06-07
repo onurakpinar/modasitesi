@@ -25,9 +25,21 @@
                         </a>
                         <span aria-hidden="true">·</span>
                     @endif
-                    <time datetime="{{ $post->published_at->toIso8601String() }}">
-                        {{ $post->published_at->translatedFormat('d F Y') }}
-                    </time>
+                    <span>
+                        Yayın:
+                        <time datetime="{{ $post->published_at->toIso8601String() }}">
+                            {{ $post->published_at->translatedFormat('d F Y') }}
+                        </time>
+                    </span>
+                    @if ($post->content_updated_at && $post->content_updated_at->gt($post->published_at))
+                        <span aria-hidden="true">·</span>
+                        <span>
+                            Güncelleme:
+                            <time datetime="{{ $post->content_updated_at->toIso8601String() }}">
+                                {{ $post->content_updated_at->translatedFormat('d F Y') }}
+                            </time>
+                        </span>
+                    @endif
                 </div>
             </header>
 
@@ -50,6 +62,15 @@
                 {!! $postBodyAfterAd !!}
                 <x-adsense.article-bottom :post="$post" />
             </div>
+
+            @if (filled($post->sources))
+                <section class="mx-auto mt-10 max-w-3xl border-t border-stone-200 pt-8">
+                    <h2 class="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Kaynaklar</h2>
+                    <div class="prose-content mt-4 text-stone-700">
+                        {!! $post->sources !!}
+                    </div>
+                </section>
+            @endif
 
             @if ($post->tags->isNotEmpty())
                 <div class="mx-auto mt-10 max-w-3xl border-t border-stone-200 pt-8">

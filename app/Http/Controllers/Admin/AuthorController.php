@@ -83,12 +83,16 @@ class AuthorController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:authors,slug,'.($authorId ?? 'NULL')],
             'short_bio' => ['nullable', 'string'],
+            'bio' => ['nullable', 'string'],
+            'expertise' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
             'profile_image' => ['nullable', File::image(allowSvg: false)->max(2048)],
             'is_active' => ['boolean'],
         ], [], [
             'name' => 'ad',
             'short_bio' => 'kısa biyografi',
+            'bio' => 'biyografi',
+            'expertise' => 'uzmanlık alanı',
             'profile_image' => 'profil görseli',
         ]);
 

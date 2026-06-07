@@ -39,6 +39,11 @@ class SeoSettings
         return MediaUrl::public(self::get('site_logo'));
     }
 
+    public static function publisherLegalName(): string
+    {
+        return config('site.publisher_legal_name', 'GOAT Bilişim Teknolojileri Ticaret A.Ş.');
+    }
+
     public static function absoluteUrl(string $path = '/'): string
     {
         return URL::to($path);

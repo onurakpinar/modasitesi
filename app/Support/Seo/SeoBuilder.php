@@ -28,6 +28,13 @@ class SeoBuilder
                 'inLanguage' => 'tr-TR',
             ],
             self::organizationSchema(),
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    self::breadcrumbItem(1, 'Ana Sayfa', $canonical),
+                ],
+            ],
         ]));
 
         return new SeoMeta(
@@ -81,11 +88,12 @@ class SeoBuilder
             'description' => $description,
             'image' => $image ? [$image] : null,
             'datePublished' => $post->published_at?->toIso8601String(),
-            'dateModified' => $post->updated_at->toIso8601String(),
-            'author' => $post->author?->name ? [
+            'dateModified' => ($post->content_updated_at ?? $post->updated_at)->toIso8601String(),
+            'author' => $post->author?->name ? array_filter([
                 '@type' => 'Person',
                 'name' => $post->author->name,
-            ] : null,
+                'url' => route('authors.show', $post->author->slug),
+            ]) : null,
             'publisher' => self::publisherSchema(),
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',
@@ -230,7 +238,7 @@ class SeoBuilder
     {
         $schema = [
             '@type' => 'Organization',
-            'name' => SeoSettings::siteName(),
+            'name' => SeoSettings::publisherLegalName(),
         ];
 
         if ($logo = SeoSettings::publisherLogoUrl()) {

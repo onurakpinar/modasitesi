@@ -50,8 +50,10 @@ if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     php artisan migrate --force
 fi
 
-if [ "${RUN_DEMO_SEED:-true}" = "true" ]; then
-    log "İçerik kontrolü (demo yazılar)..."
+if [ "${RUN_DEMO_SEED:-false}" = "true" ]; then
+    log "Demo içerik (taslak) yükleniyor..."
+    php artisan site:ensure-content --demo --force --no-ansi || log "UYARI: site:ensure-content başarısız."
+else
     php artisan site:ensure-content --force --no-ansi || log "UYARI: site:ensure-content başarısız."
 fi
 

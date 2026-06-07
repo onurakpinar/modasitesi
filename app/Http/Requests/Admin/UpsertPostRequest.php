@@ -32,6 +32,7 @@ class UpsertPostRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug,'.($postId ?? 'NULL')],
             'excerpt' => [$requiresPublish ? 'required' : 'nullable', 'string', 'max:1000'],
             'body' => [$requiresPublish ? 'required' : 'nullable', 'string'],
+            'sources' => ['nullable', 'string'],
             'cover_image' => [
                 'nullable',
                 'image',
@@ -116,6 +117,7 @@ class UpsertPostRequest extends FormRequest
             'title' => 'başlık',
             'excerpt' => 'özet',
             'body' => 'içerik',
+            'sources' => 'kaynaklar',
             'cover_image' => 'kapak görseli',
             'cover_image_alt' => 'kapak görseli alt metni',
             'status' => 'durum',

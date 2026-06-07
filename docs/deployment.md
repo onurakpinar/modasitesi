@@ -49,8 +49,9 @@ Uygulama **yalnızca SQLite** kullanır; ayrı MySQL servisi gerekmez.
 2. Coolify → **Persistent Storage** (volume) ekleyin:
    - `/var/www/html/database` — `database.sqlite` dosyası
    - `/var/www/html/storage` — yüklenen görseller ve önbellek
-3. İlk deploy’da: `RUN_MIGRATIONS=true` ve `RUN_DEMO_SEED=true` (varsayılan) — container boş veritabanında 30 demo yazıyı otomatik yükler
-4. Alternatif: shell’den `php artisan site:ensure-content --force`
+3. İlk deploy’da: `RUN_MIGRATIONS=true`; özgün içerik admin panelinden eklenir
+4. Geliştirme için taslak demo: `RUN_DEMO_SEED=true` veya `php artisan site:ensure-content --demo --force` (otomatik yayınlamaz)
+5. Şablon yazıları yayından kaldırma: `php artisan content:unpublish-flagged`
 
 Ayrıntılar: [database.md](database.md)
 

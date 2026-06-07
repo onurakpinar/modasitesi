@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'slug', 'short_bio', 'profile_image', 'email', 'is_active'])]
+#[Fillable(['name', 'slug', 'short_bio', 'bio', 'expertise', 'profile_image', 'email', 'is_active'])]
 class Author extends Model
 {
     /** @use HasFactory<\Database\Factories\AuthorFactory> */
