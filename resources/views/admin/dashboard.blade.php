@@ -121,7 +121,7 @@
         @if ($recentPosts->isEmpty())
             <p class="px-5 py-8 text-sm text-stone-500">Henüz yazı eklenmedi.</p>
         @else
-            <div class="overflow-x-auto">
+            <div class="admin-table-scroll overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead class="border-b border-stone-200 bg-stone-50 text-left text-stone-600">
                         <tr>

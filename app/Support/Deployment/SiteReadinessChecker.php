@@ -35,7 +35,13 @@ class SiteReadinessChecker
             $this->result('Süper yönetici', $this->hasSuperAdmin() ? ReadinessStatus::Pass : ReadinessStatus::Fail, $this->hasSuperAdmin() ? 'En az bir aktif süper yönetici var.' : 'php artisan admin:create ile süper yönetici oluşturun.'),
             $this->result('Gerçek site adı', $this->hasSiteName() ? ReadinessStatus::Pass : ReadinessStatus::Fail, $this->hasSiteName() ? SiteSetting::get('site_name') : 'Admin panelinden site adı girilmedi.'),
             $this->result('Logo veya metin marka', $this->hasBranding() ? ReadinessStatus::Pass : ReadinessStatus::Warning, $this->brandingDetail()),
-            $this->result('İletişim e-postası', $this->hasContactEmail() ? ReadinessStatus::Pass : ReadinessStatus::Fail, $this->hasContactEmail() ? SiteSetting::get('contact_email') : 'Geçerli iletişim e-postası girilmedi.'),
+            $this->result(
+                'İletişim e-postası',
+                $this->hasContactEmail() ? ReadinessStatus::Pass : ReadinessStatus::Fail,
+                $this->hasContactEmail()
+                    ? (string) \App\Support\Legal\LegalPlaceholders::effectiveContactEmail(SiteSetting::get('contact_email'))
+                    : 'Geçerli iletişim e-postası girilmedi.'
+            ),
             $this->policyPagesCheck(),
             $this->result('Lorem ipsum kontrolü', ! $this->hasPublicLoremIpsum() ? ReadinessStatus::Pass : ReadinessStatus::Fail, $this->hasPublicLoremIpsum() ? 'Yayında lorem ipsum içerik bulundu.' : 'Yayın içeriklerinde lorem ipsum yok.'),
             $this->taslakSizintisiCheck(),

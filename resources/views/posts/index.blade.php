@@ -3,7 +3,7 @@
 @section('content')
     <x-site-container class="max-w-6xl py-12 sm:py-16">
         <header class="max-w-2xl">
-            <h1 class="font-display text-4xl text-stone-900">Yazılar</h1>
+            <h1 class="font-display text-3xl text-stone-900 sm:text-4xl">Yazılar</h1>
             <p class="mt-4 text-base text-stone-600">Yayınlanmış moda yazılarını keşfedin.</p>
         </header>
 

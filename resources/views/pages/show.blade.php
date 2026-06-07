@@ -8,7 +8,7 @@
         ]" />
 
         <header class="max-w-3xl">
-            <h1 class="font-display text-4xl text-stone-900 sm:text-5xl">{{ $page->title }}</h1>
+            <h1 class="break-words font-display text-3xl text-stone-900 sm:text-4xl lg:text-5xl">{{ $page->title }}</h1>
         </header>
 
         <div class="prose-content mt-10 max-w-3xl text-stone-800">

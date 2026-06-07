@@ -12,7 +12,7 @@
                     @if (! empty($item['url']) && $index < count($items) - 1)
                         <a href="{{ $item['url'] }}" class="hover:text-accent-700">{{ $item['label'] }}</a>
                     @else
-                        <span class="text-stone-700" @if($index === count($items) - 1) aria-current="page" @endif>
+                        <span class="break-words text-stone-700" @if($index === count($items) - 1) aria-current="page" @endif>
                             {{ $item['label'] }}
                         </span>
                     @endif

@@ -82,6 +82,8 @@ class AdSenseModuleTest extends TestCase
     {
         $admin = User::factory()->superAdmin()->create();
         $this->publishStaticPagesForTests();
+        config(['legal.contact_email' => '']);
+        SiteSetting::set('contact_email', '');
 
         $this->actingAs($admin)
             ->put(route('admin.adsense.update'), [

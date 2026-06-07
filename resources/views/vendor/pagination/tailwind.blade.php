@@ -24,7 +24,7 @@
                 sonuç
             </p>
 
-            <div>
+            <div class="max-w-full overflow-x-auto admin-table-scroll">
                 <span class="relative z-0 inline-flex rounded shadow-sm">
                     @if ($paginator->onFirstPage())
                         <span class="inline-flex cursor-not-allowed items-center rounded-l border border-stone-200 px-3 py-2 text-sm text-stone-400" aria-disabled="true">&lsaquo;</span>

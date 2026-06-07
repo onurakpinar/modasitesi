@@ -32,6 +32,10 @@
         line-height: 1.75;
     }
 
+    main {
+        min-width: 0;
+    }
+
     @media (min-width: 640px) {
         body {
             font-size: 1.125rem;
@@ -75,6 +79,8 @@
 @layer components {
     .prose-content {
         max-width: 42rem;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     .prose-content p {
@@ -85,18 +91,61 @@
         margin-top: 2.5rem;
         margin-bottom: 1rem;
         font-family: var(--font-display);
-        font-size: 1.75rem;
+        font-size: 1.5rem;
         line-height: 1.3;
         color: var(--color-stone-900);
+    }
+
+    @media (min-width: 640px) {
+        .prose-content h2 {
+            font-size: 1.75rem;
+        }
     }
 
     .prose-content h3 {
         margin-top: 2rem;
         margin-bottom: 0.75rem;
         font-family: var(--font-display);
-        font-size: 1.375rem;
+        font-size: 1.25rem;
         line-height: 1.35;
         color: var(--color-stone-900);
+    }
+
+    @media (min-width: 640px) {
+        .prose-content h3 {
+            font-size: 1.375rem;
+        }
+    }
+
+    .prose-content table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        border-collapse: collapse;
+    }
+
+    .prose-content pre,
+    .prose-content iframe,
+    .prose-content video {
+        max-width: 100%;
+    }
+
+    .prose-content pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .prose-content img {
+        height: auto;
+    }
+
+    .prose-content blockquote {
+        margin: 1.5rem 0;
+        border-left: 3px solid var(--color-stone-300);
+        padding-left: 1rem;
+        color: var(--color-stone-600);
     }
 
     .prose-content ul,
@@ -130,5 +179,17 @@
 
     .prose-content a:hover {
         color: var(--color-accent-800);
+    }
+
+    .admin-table-scroll {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    trix-toolbar .trix-button-row {
+        flex-wrap: wrap;
+    }
+
+    trix-toolbar .trix-button-group {
+        margin-bottom: 0.25rem;
     }
 }

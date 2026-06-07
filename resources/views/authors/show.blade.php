@@ -20,9 +20,9 @@
                 @endif
             </div>
 
-            <div class="max-w-2xl">
+            <div class="min-w-0 max-w-2xl">
                 <p class="text-xs font-medium uppercase tracking-[0.2em] text-accent-700">Yazar</p>
-                <h1 class="mt-2 font-display text-4xl text-stone-900">{{ $author->name }}</h1>
+                <h1 class="mt-2 break-words font-display text-3xl text-stone-900 sm:text-4xl">{{ $author->name }}</h1>
                 @if ($author->short_bio)
                     <p class="mt-4 text-base leading-relaxed text-stone-600">{{ $author->short_bio }}</p>
                 @endif

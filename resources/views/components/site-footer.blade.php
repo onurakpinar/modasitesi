@@ -1,8 +1,8 @@
-<footer class="mt-16 border-t border-stone-200 bg-white sm:mt-20">
+<footer class="mt-16 border-t border-stone-200 bg-white sm:mt-20" x-data="footerAccordion()">
     <x-site-container class="max-w-6xl py-10 sm:py-16">
         <div class="grid gap-6 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div class="md:col-span-2 lg:col-span-1">
-                <p class="font-display text-lg text-stone-900 sm:text-xl">{{ $siteName ?? config('site.name') }}</p>
+                <p class="break-words font-display text-lg text-stone-900 sm:text-xl">{{ $siteName ?? config('site.name') }}</p>
                 <p class="mt-3 max-w-sm text-base leading-relaxed text-stone-600">
                     {{ $footerDescription ?: ($siteShortDescription ?: ($siteTagline ?? config('site.tagline'))) }}
                 </p>

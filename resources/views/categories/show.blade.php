@@ -8,7 +8,7 @@
         ]" />
 
         <header class="max-w-2xl">
-            <h1 class="font-display text-4xl text-stone-900">{{ $category->name }}</h1>
+            <h1 class="break-words font-display text-3xl text-stone-900 sm:text-4xl">{{ $category->name }}</h1>
             @if ($category->description)
                 <p class="mt-4 text-base leading-relaxed text-stone-600">{{ $category->description }}</p>
             @endif

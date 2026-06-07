@@ -10,7 +10,7 @@
 
         <header class="max-w-2xl">
             <p class="text-xs font-medium uppercase tracking-[0.2em] text-accent-700">Etiket</p>
-            <h1 class="mt-3 font-display text-4xl text-stone-900">{{ $tag->name }}</h1>
+            <h1 class="mt-3 break-words font-display text-3xl text-stone-900 sm:text-4xl">{{ $tag->name }}</h1>
         </header>
 
         @if ($posts->count() > 0)

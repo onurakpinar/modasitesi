@@ -25,8 +25,8 @@
             </a>
         @endif
 
-        <h{{ $featured ? 2 : 3 }} class="mt-2 font-display text-xl leading-snug text-stone-900 sm:text-2xl">
-            <a href="{{ route('posts.show', $post->slug) }}" class="hover:text-accent-800">
+        <h{{ $featured ? 2 : 3 }} class="mt-2 line-clamp-3 font-display text-xl leading-snug text-stone-900 sm:text-2xl">
+            <a href="{{ route('posts.show', $post->slug) }}" class="break-words hover:text-accent-800">
                 {{ $post->title }}
             </a>
         </h{{ $featured ? 2 : 3 }}>

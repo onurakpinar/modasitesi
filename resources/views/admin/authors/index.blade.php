@@ -5,7 +5,7 @@
 @section('content')
     <x-admin-page-header title="Yazarlar" :action-url="route('admin.authors.create')" action-label="Yeni Yazar" />
 
-    <div class="overflow-x-auto border border-stone-200 bg-white">
+    <div class="admin-table-scroll overflow-x-auto border border-stone-200 bg-white">
         <table class="min-w-full text-sm">
             <thead class="border-b border-stone-200 bg-stone-50 text-left text-stone-600">
                 <tr>

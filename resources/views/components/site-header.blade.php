@@ -4,39 +4,15 @@
 
 <header
     class="relative z-40 border-b border-stone-200 bg-white"
-    x-data="{
-        open: false,
-        categoriesOpen: false,
-        toggle() {
-            this.open = !this.open;
-            if (this.open) {
-                this.categoriesOpen = false;
-                document.body.classList.add('overflow-hidden');
-                this.$nextTick(() => this.$refs.mobileNav?.querySelector('a, button')?.focus());
-            } else {
-                this.close();
-            }
-        },
-        close() {
-            if (!this.open) {
-                return;
-            }
-            this.open = false;
-            this.categoriesOpen = false;
-            document.body.classList.remove('overflow-hidden');
-            this.$nextTick(() => this.$refs.menuButton?.focus());
-        },
-        toggleCategories() {
-            this.categoriesOpen = !this.categoriesOpen;
-        },
-        closeCategories() {
-            this.categoriesOpen = false;
-        },
-    }"
+    x-data="siteHeader()"
     @keydown.escape.window="close(); closeCategories()"
 >
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <div class="flex items-center justify-between gap-3 py-4 sm:gap-4 sm:py-5">
+        <div
+            x-ref="headerBar"
+            data-site-header-bar
+            class="flex items-center justify-between gap-3 py-4 sm:gap-4 sm:py-5"
+        >
             <a href="{{ route('home') }}" class="group flex min-w-0 flex-1 items-center gap-3 sm:gap-4 lg:flex-none" @click="close()">
                 @if ($logoUrl)
                     <img
@@ -48,7 +24,7 @@
                     >
                 @endif
                 <div class="min-w-0">
-                    <span class="font-display text-xl tracking-tight text-stone-900 sm:text-2xl lg:text-3xl">
+                    <span class="block truncate font-display text-xl tracking-tight text-stone-900 sm:text-2xl lg:text-3xl">
                         {{ $siteName ?? config('site.name') }}
                     </span>
                     @if ($siteTagline ?? config('site.tagline'))
@@ -75,14 +51,15 @@
                     <div class="relative" @click.outside="closeCategories()">
                         <button
                             type="button"
-                            class="inline-flex items-center gap-1.5 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 {{ request()->routeIs('categories.show') ? 'text-accent-700' : '' }}"
+                            class="inline-flex min-h-11 items-center gap-1.5 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 {{ request()->routeIs('categories.show') ? 'text-accent-700' : '' }}"
                             @click="toggleCategories()"
                             :aria-expanded="categoriesOpen"
                             aria-controls="site-navigation-categories"
+                            aria-haspopup="true"
                         >
                             Kategoriler
                             <svg
-                                class="size-4 transition-transform duration-200"
+                                class="size-4 shrink-0 transition-transform duration-200"
                                 :class="{ 'rotate-180': categoriesOpen }"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -103,11 +80,13 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-1"
-                            class="absolute left-0 top-full z-50 mt-2 min-w-[12rem] rounded-md border border-stone-200 bg-white py-2 shadow-lg"
+                            class="absolute left-0 top-full z-50 mt-2 max-h-[min(24rem,calc(100dvh-8rem))] min-w-[12rem] overflow-y-auto rounded-md border border-stone-200 bg-white py-2 shadow-lg"
+                            role="menu"
                         >
                             @foreach ($navCategories as $category)
                                 <a
                                     href="{{ route('categories.show', $category->slug) }}"
+                                    role="menuitem"
                                     class="block px-4 py-2.5 text-sm normal-case tracking-normal text-stone-700 hover:bg-stone-50 hover:text-accent-700 {{ request()->routeIs('categories.show') && request()->route('slug') === $category->slug ? 'bg-stone-50 text-accent-700' : '' }}"
                                     @click="closeCategories()"
                                 >
@@ -126,7 +105,7 @@
             <div class="flex shrink-0 items-center gap-1">
                 <a
                     href="{{ route('search') }}"
-                    class="rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
+                    class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
                     aria-label="Ara"
                 >
                     <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -137,7 +116,7 @@
                 <button
                     type="button"
                     x-ref="menuButton"
-                    class="inline-flex items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
+                    class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 lg:hidden"
                     @click="toggle()"
                     :aria-expanded="open"
                     aria-controls="site-navigation-mobile"
@@ -177,23 +156,24 @@
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2"
-            class="relative z-40 max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-stone-100 bg-white pb-4 lg:hidden"
+            class="relative z-40 max-h-[calc(100dvh-var(--site-header-offset,5rem))] overflow-y-auto border-t border-stone-100 bg-white pb-4 lg:hidden"
         >
-            <a href="{{ route('home') }}" class="block py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ana Sayfa</a>
-            <a href="{{ route('posts.index') }}" class="block py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Yazılar</a>
+            <a href="{{ route('home') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ana Sayfa</a>
+            <a href="{{ route('posts.index') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Yazılar</a>
 
             @if ($navCategories->isNotEmpty())
-                <div x-data="{ mobileCategoriesOpen: false }" class="border-t border-stone-50 first:border-t-0">
+                <div class="border-t border-stone-50">
                     <button
                         type="button"
-                        class="flex w-full items-center justify-between py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2"
-                        @click="mobileCategoriesOpen = !mobileCategoriesOpen"
-                        :aria-expanded="mobileCategoriesOpen"
+                        class="flex min-h-11 w-full items-center justify-between py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2"
+                        @click="toggleMobileAccordion('categories')"
+                        :aria-expanded="isMobileAccordionOpen('categories')"
+                        aria-controls="site-navigation-mobile-categories"
                     >
                         Kategoriler
                         <svg
-                            class="size-4 transition-transform duration-200"
-                            :class="{ 'rotate-180': mobileCategoriesOpen }"
+                            class="size-4 shrink-0 transition-transform duration-200"
+                            :class="{ 'rotate-180': isMobileAccordionOpen('categories') }"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -203,7 +183,8 @@
                         </svg>
                     </button>
                     <div
-                        x-show="mobileCategoriesOpen"
+                        id="site-navigation-mobile-categories"
+                        x-show="isMobileAccordionOpen('categories')"
                         x-cloak
                         x-transition:enter="transition ease-out duration-150"
                         x-transition:enter-start="opacity-0 -translate-y-1"
@@ -213,7 +194,7 @@
                         @foreach ($navCategories as $category)
                             <a
                                 href="{{ route('categories.show', $category->slug) }}"
-                                class="block py-2.5 text-sm font-medium normal-case tracking-normal text-stone-600 hover:text-accent-700"
+                                class="block min-h-11 py-2.5 text-sm font-medium normal-case tracking-normal text-stone-600 hover:text-accent-700"
                                 @click="close()"
                             >
                                 {{ $category->name }}
@@ -223,7 +204,7 @@
                 </div>
             @endif
 
-            <a href="{{ route('search') }}" class="block py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ara</a>
+            <a href="{{ route('search') }}" class="block min-h-11 py-3 text-sm font-medium uppercase tracking-widest text-stone-600 hover:text-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:ring-offset-2" @click="close()">Ara</a>
         </nav>
     </div>
 </header>

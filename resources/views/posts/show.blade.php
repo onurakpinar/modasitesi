@@ -16,7 +16,7 @@
                     </a>
                 @endif
 
-                <h1 class="mt-4 font-display text-4xl leading-tight text-stone-900 sm:text-5xl">{{ $post->title }}</h1>
+                <h1 class="mt-4 break-words font-display text-3xl leading-tight text-stone-900 sm:text-4xl lg:text-5xl">{{ $post->title }}</h1>
 
                 <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-stone-500">
                     @if ($post->author)
