@@ -44,8 +44,8 @@ if ! php artisan optimize; then
     php artisan optimize:clear || true
 fi
 
-chown -R www-data:www-data storage bootstrap/cache
-chmod -R ug+rwx storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache database
+chmod -R ug+rwx storage bootstrap/cache database
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     log "Migration çalıştırılıyor..."
