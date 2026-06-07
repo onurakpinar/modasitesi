@@ -12,7 +12,6 @@
                 <script
                     type="text/plain"
                     data-cookieyes="{{ CookieYesSettings::ADVERTISEMENT_CATEGORY }}"
-                    async
                     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}"
                     crossorigin="anonymous"
                 ></script>

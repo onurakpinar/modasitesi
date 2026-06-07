@@ -28,24 +28,26 @@ class CookieYesTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_public_layout_cookieyes_scriptini_tek_sefer_render_eder(): void
+    public function test_public_layout_yalnizca_tek_cookieyes_scripti_render_eder(): void
     {
         $html = $this->get(route('home'))->getContent();
 
         $this->assertSame(1, substr_count($html, 'id="cookieyes"'));
+        $this->assertSame(1, substr_count($html, self::SCRIPT_SNIPPET));
         $this->assertStringContainsString('<!-- Start cookieyes banner -->', $html);
-        $this->assertStringContainsString(self::SCRIPT_SNIPPET, $html);
         $this->assertStringContainsString('<!-- End cookieyes banner -->', $html);
+        $this->assertStringNotContainsString('cky-settings.js', $html);
+        $this->assertStringNotContainsString('ckySettings', $html);
     }
 
-    public function test_cookieyes_scripti_head_basinda_adsense_oncesi_yuklenir(): void
+    public function test_cookieyes_scripti_head_basinda_ve_adsense_oncesi_yuklenir(): void
     {
         $html = $this->get(route('home'))->getContent();
 
         $headPosition = strpos($html, '<head>');
         $cookieYesPosition = strpos($html, 'id="cookieyes"');
         $charsetPosition = strpos($html, 'charset="utf-8"');
-        $siteHeadPosition = strpos($html, '@vite') ?: strpos($html, 'build/assets/app-') ?: strpos($html, 'rel="stylesheet"');
+        $siteAssetsPosition = strpos($html, 'build/assets/app-') ?: strpos($html, 'rel="stylesheet"');
 
         $this->assertNotFalse($headPosition);
         $this->assertNotFalse($cookieYesPosition);
@@ -53,8 +55,8 @@ class CookieYesTest extends TestCase
         $this->assertGreaterThan($headPosition, $cookieYesPosition);
         $this->assertLessThan($charsetPosition, $cookieYesPosition);
 
-        if ($siteHeadPosition !== false) {
-            $this->assertLessThan($siteHeadPosition, $cookieYesPosition);
+        if ($siteAssetsPosition !== false) {
+            $this->assertLessThan($siteAssetsPosition, $cookieYesPosition);
         }
     }
 
@@ -67,6 +69,22 @@ class CookieYesTest extends TestCase
             ->getContent();
 
         $this->assertStringNotContainsString('cdn-cookieyes.com', $html);
+    }
+
+    public function test_uretimde_reklam_scriptleri_cookieyes_onayina_ertelenir(): void
+    {
+        AdSettings::simulateEnvironment('production');
+        AdSettings::setBoolean('adsense_verification_enabled', true);
+        AdSettings::setBoolean('adsense_ads_enabled', true);
+        AdSettings::setBoolean('adsense_auto_ads_enabled', true);
+        AdSettings::setBoolean('certified_cmp_configured', true);
+        AdSettings::setString('adsense_client_id', 'ca-pub-1234567890123456');
+
+        $html = $this->get(route('home'))->getContent();
+
+        $this->assertStringContainsString('type="text/plain"', $html);
+        $this->assertStringContainsString('data-cookieyes="cookieyes-advertisement"', $html);
+        $this->assertStringNotContainsString('data-cookieyes="cookieyes-necessary"', $html);
     }
 
     public function test_uretimde_cookieyes_icin_csp_domainleri_tanimli(): void
