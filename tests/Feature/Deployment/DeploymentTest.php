@@ -163,7 +163,7 @@ class DeploymentTest extends TestCase
 
         foreach ([
             'Coolify',
-            'MySQL',
+            'SQLite',
             'APP_KEY',
             'migrate --force',
             'admin:create',

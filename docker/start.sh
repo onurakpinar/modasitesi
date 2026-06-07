@@ -23,7 +23,13 @@ mkdir -p \
     storage/framework/sessions \
     storage/framework/views \
     storage/app/public \
-    bootstrap/cache
+    bootstrap/cache \
+    database
+
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ] && [ ! -f database/database.sqlite ]; then
+    log "SQLite veritabanı dosyası oluşturuluyor..."
+    touch database/database.sqlite
+fi
 
 if [ ! -L public/storage ]; then
     php artisan storage:link --force

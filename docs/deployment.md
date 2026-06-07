@@ -5,7 +5,7 @@ Bu belge ModaPusula Laravel uygulamasının üretim ortamına dağıtımını an
 ## Gereksinimler
 
 - PHP 8.3+ (Docker imajında dahil)
-- MySQL 8+
+- SQLite (PHP `pdo_sqlite` — Docker imajında dahil)
 - Node.js 22+ (yalnızca asset derlemesi için; Docker build aşamasında çalışır)
 - Composer 2
 - HTTPS (Coolify veya ters vekil üzerinden)
@@ -41,12 +41,17 @@ Yerel geliştirmede `.env` içinde `APP_ENV=local` ve `APP_DEBUG=true` kullanın
 7. **Readiness** kontrolü (DB bağlandıktan sonra): `/health` → `200` / DB yoksa `503`
 8. Health check port: `8080`
 
-### MySQL bağlama
+### SQLite ve kalıcı depolama
 
-1. Coolify’da ayrı bir **MySQL** servisi oluşturun.
-2. Uygulamayı bu servise **link** edin.
-3. Coolify otomatik olarak `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` değişkenlerini enjekte eder.
-4. Karakter seti: `utf8mb4` / `utf8mb4_unicode_ci`
+Uygulama **yalnızca SQLite** kullanır; ayrı MySQL servisi gerekmez.
+
+1. Ortam değişkeni: `DB_CONNECTION=sqlite`
+2. Coolify → **Persistent Storage** (volume) ekleyin:
+   - `/var/www/html/database` — `database.sqlite` dosyası
+   - `/var/www/html/storage` — yüklenen görseller ve önbellek
+3. İlk deploy’da migration: `RUN_MIGRATIONS=true` veya shell’den `php artisan migrate --force`
+
+Ayrıntılar: [database.md](database.md)
 
 ### İlk deploy kontrol listesi (zorunlu)
 
@@ -58,7 +63,8 @@ Deploy öncesi Coolify’da şunlar **mutlaka** tanımlı olmalı; aksi halde co
 | `APP_ENV` | `production` | |
 | `APP_DEBUG` | `false` | |
 | `APP_URL` | `https://alanadiniz.com` | Coolify FQDN veya özel domain |
-| `DB_*` | MySQL link | MySQL servisini uygulamaya bağlayın |
+| `DB_CONNECTION` | `sqlite` | Ayrı DB sunucusu yok |
+| Persistent volume | `database`, `storage` | Veri deploy arasında kalır |
 | Port (Coolify) | `8080` | Build → Ports / Network |
 
 İlk kurulumda migration için geçici olarak `RUN_MIGRATIONS=true` verip bir deploy sonrası `false` yapabilirsiniz; veya container shell’den `php artisan migrate --force`.
@@ -77,7 +83,7 @@ Coolify → Application → Environment Variables bölümünde en az şunları t
 | `APP_TIMEZONE` | `Europe/Istanbul` | |
 | `SESSION_SECURE_COOKIE` | `true` | |
 | `LOG_LEVEL` | `warning` | |
-| `DB_*` | Coolify MySQL | Link ile otomatik |
+| `DB_CONNECTION` | `sqlite` | |
 | `CACHE_STORE` | `database` | |
 | `SESSION_DRIVER` | `database` | |
 | `QUEUE_CONNECTION` | `database` | |
@@ -232,10 +238,10 @@ php artisan site:security-check
 
 ### Veritabanı
 
-Coolify MySQL servisinde günlük otomatik yedeklemeyi etkinleştirin. Manuel yedek:
+Volume üzerindeki `database/database.sqlite` dosyasını düzenli kopyalayın:
 
 ```bash
-mysqldump -h DB_HOST -u DB_USER -p DB_NAME > yedek-$(date +%F).sql
+cp database/database.sqlite "yedek-$(date +%F).sqlite"
 ```
 
 Yedek dosyalarını güvenli, şifreli depoda saklayın; repoya **commit etmeyin**.

@@ -4,10 +4,9 @@ Türkçe moda yayın sitesi. Google AdSense başvurusuna uygun, sade ve hızlı 
 
 ## Gereksinimler
 
-- PHP 8.3+
+- PHP 8.3+ (SQLite eklentisi dahil)
 - Composer 2.x
 - Node.js 20+
-- MySQL 8+ (üretim) veya SQLite (yerel geliştirme)
 
 ## Lokal kurulum
 
@@ -20,16 +19,9 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# .env içinde veritabanı ayarlarını düzenleyin (MySQL örneği):
-# DB_CONNECTION=mysql
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=modapusula
-# DB_USERNAME=root
-# DB_PASSWORD=
-
-# Veritabanı
-php artisan migrate
+# Veritabanı (SQLite)
+touch database/database.sqlite
+php artisan migrate --seed
 
 # Depolama bağlantısı
 php artisan storage:link
@@ -40,6 +32,8 @@ npm run build
 # Geliştirme sunucusu
 php artisan serve
 ```
+
+Detay: [docs/database.md](docs/database.md)
 
 Geliştirme sırasında Vite için ayrı bir terminalde:
 
@@ -70,27 +64,9 @@ php artisan test
 ## Sağlık kontrolü
 
 ```bash
-curl http://localhost:8000/health
+curl http://127.0.0.1:8000/health
 ```
 
-Örnek yanıt:
+## Deploy
 
-```json
-{
-  "status": "ok",
-  "app": "ModaPusula",
-  "environment": "local",
-  "timestamp": "2026-06-06T14:00:00+03:00"
-}
-```
-
-## Teknoloji
-
-- Laravel 13.x
-- Blade + Tailwind CSS 4 + Vite
-- Alpine.js (minimal etkileşimler)
-- PHPUnit
-
-## Lisans
-
-MIT
+Coolify üzerinden Docker ile dağıtım: [docs/deployment.md](docs/deployment.md)

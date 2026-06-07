@@ -7,7 +7,7 @@ Son güncelleme: 2026-06-06
 | Görev | Durum | Notlar |
 |-------|-------|--------|
 | Laravel 13.x kurulumu | Tamamlandı | v13.14.0 |
-| `.env.example` MySQL ayarları | Tamamlandı | `modapusula`, `utf8mb4` |
+| `.env.example` SQLite ayarları | Tamamlandı | `database/database.sqlite` |
 | Uygulama yapılandırması | Tamamlandı | `APP_NAME`, saat dilimi, locale |
 | Türkçe dil dosyaları | Tamamlandı | `lang/tr/` |
 | Layout ve bileşenler | Tamamlandı | Ön yüz + hata sayfaları |
