@@ -34,9 +34,10 @@ RUN apk add --no-cache \
         sqlite-dev \
         libpng-dev \
         libjpeg-turbo-dev \
+        libwebp-dev \
         freetype-dev \
         oniguruma-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" pdo_sqlite gd opcache bcmath \
     && rm -rf /var/cache/apk/*
 
