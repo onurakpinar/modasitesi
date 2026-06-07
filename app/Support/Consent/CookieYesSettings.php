@@ -6,9 +6,9 @@ use App\Support\Ads\AdSettings;
 
 class CookieYesSettings
 {
-    public const ADVERTISEMENT_CATEGORY = 'cookieyes-category-advertisement';
+    public const ADVERTISEMENT_CATEGORY = 'cookieyes-advertisement';
 
-    public const NECESSARY_CATEGORY = 'cookieyes-category-necessary';
+    public const NECESSARY_CATEGORY = 'cookieyes-necessary';
 
     public static function enabled(): bool
     {

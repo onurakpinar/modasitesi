@@ -69,13 +69,12 @@ class CookieYesTest extends TestCase
 
         $csp = (string) $this->get(route('home'))->assertOk()->headers->get('Content-Security-Policy');
 
-        $this->assertStringContainsString('cdn-cookieyes.com', $csp);
-        $this->assertStringContainsString('log.cookieyes.com', $csp);
-        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://cdn-cookieyes.com", $csp);
+        $this->assertStringContainsString('https://*.cookieyes.com', $csp);
+        $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://*.cookieyes.com", $csp);
         $this->assertSame(1, substr_count($csp, 'connect-src'));
     }
 
-    public function test_cookieyes_body_sonunda_yuklenir(): void
+    public function test_cookieyes_head_icinde_erken_yuklenir(): void
     {
         AdSettings::simulateEnvironment('production');
 
@@ -85,11 +84,14 @@ class CookieYesTest extends TestCase
         ]);
 
         $html = $this->get(route('home'))->getContent();
+        $viewportPosition = strpos($html, 'name="viewport"');
         $cookieYesPosition = strpos($html, 'id="cookieyes"');
-        $footerPosition = strpos($html, '</footer>');
+        $titlePosition = strpos($html, '<title>');
 
+        $this->assertNotFalse($viewportPosition);
         $this->assertNotFalse($cookieYesPosition);
-        $this->assertNotFalse($footerPosition);
-        $this->assertGreaterThan($footerPosition, $cookieYesPosition);
+        $this->assertNotFalse($titlePosition);
+        $this->assertGreaterThan($viewportPosition, $cookieYesPosition);
+        $this->assertLessThan($titlePosition, $cookieYesPosition);
     }
 }

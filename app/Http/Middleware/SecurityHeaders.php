@@ -95,8 +95,7 @@ class SecurityHeaders
     private function cookieYesHosts(): array
     {
         return [
-            'https://cdn-cookieyes.com',
-            'https://log.cookieyes.com',
+            'https://*.cookieyes.com',
         ];
     }
 

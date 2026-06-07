@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <x-cookieyes.banner />
     @isset($seoMeta)
         <x-seo-head :meta="$seoMeta" />
     @else
@@ -31,7 +32,6 @@
 
     <x-site-footer />
 
-    <x-cookieyes.banner />
     <x-adsense.scripts />
 </body>
 </html>
