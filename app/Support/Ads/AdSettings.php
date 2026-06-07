@@ -196,6 +196,8 @@ class AdSettings
         return match ($key) {
             'adsense_client_id' => config('adsense.client_id'),
             'adsense_publisher_id' => config('adsense.publisher_id'),
+            'adsense_article_middle_slot' => config('adsense.article_middle_slot'),
+            'adsense_article_bottom_slot' => config('adsense.article_bottom_slot'),
             default => null,
         };
     }
@@ -206,6 +208,7 @@ class AdSettings
             'adsense_verification_enabled' => (bool) config('adsense.verification_enabled', $default),
             'adsense_ads_enabled' => (bool) config('adsense.ads_enabled', $default),
             'adsense_auto_ads_enabled' => (bool) config('adsense.auto_ads_enabled', $default),
+            'certified_cmp_configured' => (bool) config('adsense.certified_cmp_configured', $default),
             default => $default,
         };
     }

@@ -340,14 +340,27 @@ class SiteReadinessChecker
      */
     private function adsEnabledCheck(): array
     {
-        if (AdSettings::adsEnabled()) {
+        if (! AdSettings::adsEnabled()) {
+            return $this->result('Reklam gösterimi', ReadinessStatus::Warning, 'Reklam kutuları kapalı.');
+        }
+
+        if (! AdSettings::certifiedCmpConfigured()) {
             return $this->result(
                 'Reklam gösterimi',
                 ReadinessStatus::Fail,
-                'Reklam kutuları açık; AdSense onayı ve CMP doğrulamasından önce kapalı tutulmalı.'
+                'Reklamlar açık ancak sertifikalı CMP yapılandırılmamış.'
             );
         }
 
-        return $this->result('Reklam gösterimi', ReadinessStatus::Pass, 'Reklam kutuları kapalı (başvuru öncesi önerilen durum).');
+        $slotsReady = AdSettings::articleMiddleSlot() !== null
+            && AdSettings::articleBottomSlot() !== null;
+
+        return $this->result(
+            'Reklam gösterimi',
+            ReadinessStatus::Pass,
+            $slotsReady
+                ? 'Reklam kutuları, CMP ve slot ID\'leri yapılandırıldı.'
+                : 'Reklamlar açık; yazı ortası/altı slot ID\'lerini AdSense panelinden env\'e ekleyin.'
+        );
     }
 }

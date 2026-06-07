@@ -6,6 +6,7 @@
     <!-- AdSense doğrulama scripti yerel/test ortamında yüklenmez. -->
 @else
     @if (AdSettings::shouldLoadVerificationScript())
+        <meta name="google-adsense-account" content="{{ AdSettings::clientId() }}">
         @once
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ AdSettings::clientId() }}" crossorigin="anonymous"></script>
         @endonce

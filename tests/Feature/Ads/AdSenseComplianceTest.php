@@ -57,6 +57,7 @@ class AdSenseComplianceTest extends TestCase
         $html = $this->get(route('home'))->getContent();
 
         $this->assertStringNotContainsString('pagead2.googlesyndication.com', $html);
+        $this->assertStringNotContainsString('google-adsense-account', $html);
         $this->assertStringContainsString('AdSense doğrulama scripti yerel/test ortamında yüklenmez', $html);
     }
 
@@ -67,6 +68,7 @@ class AdSenseComplianceTest extends TestCase
         $html = $this->get(route('home'))->getContent();
 
         $this->assertStringNotContainsString('pagead2.googlesyndication.com', $html);
+        $this->assertStringNotContainsString('google-adsense-account', $html);
     }
 
     public function test_03_productionda_verification_kapali_iken_script_yuklenmez(): void
@@ -78,6 +80,7 @@ class AdSenseComplianceTest extends TestCase
         $html = $this->get(route('home'))->getContent();
 
         $this->assertStringNotContainsString('pagead2.googlesyndication.com', $html);
+        $this->assertStringNotContainsString('google-adsense-account', $html);
     }
 
     public function test_04_gecersiz_client_id_kaydedilemez(): void
@@ -223,6 +226,10 @@ class AdSenseComplianceTest extends TestCase
         $html = $this->get(route('home'))->getContent();
 
         $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'));
+        $this->assertStringContainsString(
+            '<meta name="google-adsense-account" content="'.self::CLIENT_ID.'">',
+            $html
+        );
     }
 
     public function test_14_reklam_alani_mobil_tasmayi_onler(): void

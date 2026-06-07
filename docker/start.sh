@@ -66,6 +66,15 @@ fi
 if [ -z "${ADSENSE_PUBLISHER_ID:-}" ]; then
     export ADSENSE_PUBLISHER_ID="pub-4108324995084946"
 fi
+if [ -z "${ADSENSE_ADS_ENABLED:-}" ]; then
+    export ADSENSE_ADS_ENABLED="true"
+fi
+if [ -z "${ADSENSE_AUTO_ADS_ENABLED:-}" ]; then
+    export ADSENSE_AUTO_ADS_ENABLED="true"
+fi
+if [ -z "${CERTIFIED_CMP_CONFIGURED:-}" ]; then
+    export CERTIFIED_CMP_CONFIGURED="true"
+fi
 
 log "AdSense ortam ayarları senkronize ediliyor..."
 php artisan adsense:sync-env --no-ansi || log "UYARI: adsense:sync-env başarısız."

@@ -41,7 +41,7 @@
 
         <fieldset class="space-y-5 border border-stone-200 bg-white p-6">
             <legend class="px-1 text-sm font-medium text-stone-900">Doğrulama ve Kimlik</legend>
-            <p class="text-sm text-stone-600">Site incelemesi için doğrulama scripti ile gerçek reklam gösterimi ayrıdır. Onay öncesi reklam kutularını kapalı tutun.</p>
+            <p class="text-sm text-stone-600">Doğrulama scripti site sahipliği için; reklam kutuları ayrı ayardır. CMP yapılandırılmadan reklamlar açılamaz.</p>
 
             <label class="flex items-center gap-2 text-sm text-stone-700">
                 <input type="hidden" name="adsense_verification_enabled" value="0">
@@ -64,7 +64,7 @@
 
         <fieldset class="space-y-5 border border-stone-200 bg-white p-6">
             <legend class="px-1 text-sm font-medium text-stone-900">Reklam Gösterimi</legend>
-            <p class="text-sm text-stone-600">Varsayılan olarak kapalıdır. Onay sonrası ve CMP doğrulandıktan sonra açın.</p>
+            <p class="text-sm text-stone-600">Yalnızca yayındaki, 700+ kelimelik yazı detay sayfalarında gösterilir. Slot ID'leri AdSense panelinden alınır.</p>
 
             <label class="flex items-center gap-2 text-sm text-stone-700">
                 <input type="hidden" name="certified_cmp_configured" value="0">

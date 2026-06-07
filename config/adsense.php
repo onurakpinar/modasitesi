@@ -22,4 +22,10 @@ return [
 
     'auto_ads_enabled' => filter_var(env('ADSENSE_AUTO_ADS_ENABLED', false), FILTER_VALIDATE_BOOL),
 
+    'certified_cmp_configured' => filter_var(env('CERTIFIED_CMP_CONFIGURED', false), FILTER_VALIDATE_BOOL),
+
+    'article_middle_slot' => env('ADSENSE_ARTICLE_MIDDLE_SLOT'),
+
+    'article_bottom_slot' => env('ADSENSE_ARTICLE_BOTTOM_SLOT'),
+
 ];
