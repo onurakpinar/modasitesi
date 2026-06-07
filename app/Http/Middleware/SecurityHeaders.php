@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Support\Ads\AdSettings;
+use App\Support\Consent\CookieYesSettings;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,13 +52,42 @@ class SecurityHeaders
             "connect-src 'self'",
         ];
 
+        $scriptHosts = [];
+        $connectHosts = [];
+
+        if ($this->allowsCookieYesScripts()) {
+            $cookieYesHosts = implode(' ', [
+                'https://cdn-cookieyes.com',
+                'https://log.cookieyes.com',
+            ]);
+            $scriptHosts[] = $cookieYesHosts;
+            $connectHosts[] = $cookieYesHosts;
+        }
+
         if ($this->allowsAdSenseScripts()) {
-            $directives[7] = "script-src 'self' 'unsafe-inline' {$adsenseHosts}";
-            $directives[8] = "connect-src 'self' {$adsenseHosts}";
+            $scriptHosts[] = $adsenseHosts;
+            $connectHosts[] = $adsenseHosts;
             $directives[] = "frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com";
         }
 
+        if ($scriptHosts !== []) {
+            $directives[7] = "script-src 'self' 'unsafe-inline' ".implode(' ', $scriptHosts);
+        }
+
+        if ($connectHosts !== []) {
+            $directives[8] = "connect-src 'self' ".implode(' ', $connectHosts);
+        }
+
         return implode('; ', $directives).';';
+    }
+
+    private function allowsCookieYesScripts(): bool
+    {
+        if (AdSettings::isLocalOrTestingEnvironment()) {
+            return false;
+        }
+
+        return CookieYesSettings::enabled() && CookieYesSettings::siteId() !== null;
     }
 
     private function allowsAdSenseScripts(): bool

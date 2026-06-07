@@ -18,6 +18,7 @@
     @endif
 
     <x-site-head />
+    <x-cookieyes.banner />
     <x-adsense.head />
 </head>
 <body class="min-h-screen bg-stone-50 text-stone-900 antialiased">
