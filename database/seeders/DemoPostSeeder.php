@@ -34,11 +34,18 @@ class DemoPostSeeder extends Seeder
     public function run(): void
     {
         $this->ensureSiteBasics();
+
+        if (Category::query()->count() === 0) {
+            $this->call(CategorySeeder::class);
+        }
+
         $authors = $this->seedAuthors();
         $categories = $this->loadCategories();
         $tags = $this->seedTags();
         $coverFetcher = new DemoPostCoverImage;
         $briefs = EditorialBriefCatalog::definitions();
+
+        $this->removeDuplicateDemoPosts($briefs);
 
         $this->command?->info('30 özgün blog yazısı oluşturuluyor…');
 
@@ -57,7 +64,8 @@ class DemoPostSeeder extends Seeder
 
             $excerpt = $this->excerpt((string) $brief['content_summary']);
             $metaDescription = $this->metaDescription((string) $brief['content_summary']);
-            $slug = Post::generateUniqueSlug($title);
+            $existing = Post::query()->where('title', $title)->orderBy('id')->first();
+            $slug = $existing?->slug ?? Post::generateUniqueSlug($title);
 
             $this->command?->line(sprintf('  [%02d/30] %s (%d kelime)', $index + 1, $title, $wordCount));
 
@@ -93,6 +101,27 @@ class DemoPostSeeder extends Seeder
         app(SitemapGenerator::class)->forget();
 
         $this->command?->info('Tamamlandı: '.Post::query()->publiclyVisible()->count().' yayınlı yazı.');
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $briefs
+     */
+    private function removeDuplicateDemoPosts(array $briefs): void
+    {
+        $titles = collect($briefs)->pluck('title_suggestion')->filter()->all();
+
+        Post::query()
+            ->whereIn('title', $titles)
+            ->orderBy('id')
+            ->get()
+            ->groupBy('title')
+            ->each(function ($group): void {
+                if ($group->count() <= 1) {
+                    return;
+                }
+
+                $group->slice(1)->each->forceDelete();
+            });
     }
 
     private function ensureSiteBasics(): void
