@@ -57,6 +57,9 @@ else
     php artisan site:ensure-content --force --no-ansi || log "UYARI: site:ensure-content başarısız."
 fi
 
+log "Editoryal içerik senkronize ediliyor..."
+php artisan content:import-articles --publish --no-ansi || log "UYARI: content:import-articles başarısız."
+
 chown -R www-data:www-data storage bootstrap/cache database
 chmod -R ug+rwx storage bootstrap/cache database
 

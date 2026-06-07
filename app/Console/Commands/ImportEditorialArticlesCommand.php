@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\PostStatus;
 use App\Models\Post;
-use App\Support\Content\ContentQualityAuditor;
 use App\Support\Editorial\EditorialArticleLoader;
 use App\Support\Editorial\EditorialBriefCatalog;
 use App\Support\HomePageCache;
@@ -14,7 +14,8 @@ use Illuminate\Console\Command;
 class ImportEditorialArticlesCommand extends Command
 {
     protected $signature = 'content:import-articles
-                            {--dry-run : Kaydetmeden kelime sayısını raporla}';
+                            {--dry-run : Kaydetmeden kelime sayısını raporla}
+                            {--publish : İçeriği aktardıktan sonra yazıları yayınla}';
 
     protected $description = 'Özgün editoryal makale dosyalarını posts tablosuna aktarır';
 
@@ -23,7 +24,9 @@ class ImportEditorialArticlesCommand extends Command
         SitemapGenerator $sitemapGenerator,
     ): int {
         $dryRun = (bool) $this->option('dry-run');
+        $publish = (bool) $this->option('publish');
         $imported = 0;
+        $published = 0;
         $missing = [];
 
         foreach (EditorialBriefCatalog::definitions() as $brief) {
@@ -60,12 +63,26 @@ class ImportEditorialArticlesCommand extends Command
                 continue;
             }
 
-            $post->update([
+            $payload = [
                 'excerpt' => $article['excerpt'],
                 'body' => $article['body'],
                 'sources' => $article['sources'],
                 'content_updated_at' => now(),
-            ]);
+            ];
+
+            if ($publish) {
+                $payload['status'] = PostStatus::Published;
+
+                if ($post->published_at === null || $post->published_at->isFuture()) {
+                    $payload['published_at'] = now();
+                }
+
+                $payload['originality_confirmed_at'] = $post->originality_confirmed_at ?? now();
+                $payload['human_reviewed_at'] = $post->human_reviewed_at ?? now();
+                $published++;
+            }
+
+            $post->update($payload);
 
             $imported++;
         }
@@ -77,6 +94,10 @@ class ImportEditorialArticlesCommand extends Command
         }
 
         $this->info(($dryRun ? 'Kontrol edilen' : 'Güncellenen')." yazı: {$imported}");
+
+        if ($publish && ! $dryRun) {
+            $this->info("Yayınlanan yazı: {$published}");
+        }
 
         if (! $dryRun && $imported > 0) {
             $homePageCache->forget();
