@@ -154,27 +154,59 @@ class AdSettings
 
     private static function boolean(string $key, bool $default = false): bool
     {
-        $value = self::get($key);
+        $value = self::getFromDatabase($key);
 
-        if ($value === null) {
-            return $default;
+        if ($value !== null) {
+            return in_array($value, ['1', 'true', 'on', 'yes'], true);
         }
 
-        return in_array($value, ['1', 'true', 'on', 'yes'], true);
+        return self::configBoolean($key, $default);
     }
 
     private static function get(string $key, ?string $default = null): ?string
     {
+        $value = self::getFromDatabase($key);
+
+        if ($value !== null) {
+            return $value;
+        }
+
+        $configured = self::configString($key);
+
+        return $configured ?? $default;
+    }
+
+    private static function getFromDatabase(string $key): ?string
+    {
         try {
             if (! Schema::hasTable('site_settings')) {
-                return $default;
+                return null;
             }
         } catch (\Throwable) {
-            return $default;
+            return null;
         }
 
         $value = SiteSetting::get($key);
 
-        return filled($value) ? $value : $default;
+        return filled($value) ? $value : null;
+    }
+
+    private static function configString(string $key): ?string
+    {
+        return match ($key) {
+            'adsense_client_id' => config('adsense.client_id'),
+            'adsense_publisher_id' => config('adsense.publisher_id'),
+            default => null,
+        };
+    }
+
+    private static function configBoolean(string $key, bool $default): bool
+    {
+        return match ($key) {
+            'adsense_verification_enabled' => (bool) config('adsense.verification_enabled', $default),
+            'adsense_ads_enabled' => (bool) config('adsense.ads_enabled', $default),
+            'adsense_auto_ads_enabled' => (bool) config('adsense.auto_ads_enabled', $default),
+            default => $default,
+        };
     }
 }

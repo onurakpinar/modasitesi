@@ -57,6 +57,19 @@ else
     php artisan site:ensure-content --force --no-ansi || log "UYARI: site:ensure-content başarısız."
 fi
 
+if [ -z "${ADSENSE_CLIENT_ID:-}" ]; then
+    export ADSENSE_CLIENT_ID="ca-pub-4108324995084946"
+fi
+if [ -z "${ADSENSE_VERIFICATION_ENABLED:-}" ]; then
+    export ADSENSE_VERIFICATION_ENABLED="true"
+fi
+if [ -z "${ADSENSE_PUBLISHER_ID:-}" ]; then
+    export ADSENSE_PUBLISHER_ID="pub-4108324995084946"
+fi
+
+log "AdSense ortam ayarları senkronize ediliyor..."
+php artisan adsense:sync-env --no-ansi || log "UYARI: adsense:sync-env başarısız."
+
 log "Editoryal içerik senkronize ediliyor..."
 php artisan content:import-articles --publish --no-ansi || log "UYARI: content:import-articles başarısız."
 php artisan content:clean-plan-residue --no-ansi || log "UYARI: content:clean-plan-residue başarısız."
